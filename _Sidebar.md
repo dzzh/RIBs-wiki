@@ -11,14 +11,14 @@
 
 #### [Data & UI Flows](Data-UI-Flows)
 
-#### RIB Classes and Naming
+#### [RIB Classes and Naming](RIB-Classes-and-Naming)
 
 
-#### State Management
+#### [State Management](State-Management)
 
-#### Tools
+#### [Tools](Tools)
 
-#### Platform Specifics
+#### [Platform Specifics](Platform-Specifics)
 * Android
 * iOS
 
