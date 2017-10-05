@@ -8,18 +8,12 @@
    * [View(Controllers)](RIBs#ViewControllers)
    * [Components](RIBs#Components)
 * [Ownership](RIBs#Ownership)
-
 #### [Data & UI Flows](Data-UI-Flows)
-
 #### [RIB Classes and Naming](RIB-Classes-and-Naming)
-
-
 #### [State Management](State-Management)
-
 #### [Tools](Tools)
-
 #### [Platform Specifics](Platform-Specifics)
-* Android
-* iOS
+* [Android](Platform-Specifics#Android)
+* [iOS](Platform-Specifics#iOS)
 
 
