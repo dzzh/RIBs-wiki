@@ -1,4 +1,4 @@
-#### [RIBs](wiki/Ribs)
+#### [RIBs](Ribs)
 * Background
 * What makes up a RIB?
    * Routers
@@ -9,7 +9,7 @@
    * Component
 * Ownership
 
-#### [Data & UI Flows](Data & UI Flows)
+#### [Data & UI Flows](Data_UI_Flows)
 
 #### RIB Classes and Naming
 
