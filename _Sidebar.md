@@ -1,13 +1,13 @@
-#### [RIBs](Ribs)
-* Background
-* What makes up a RIB?
-   * Routers
-   * Interactors
-   * Builders
-   * Presenter
-   * View(Controller)
-   * Component
-* Ownership
+#### [RIBs](RIBs)
+* [Background](RIBs#Background)
+* [What makes up a RIB?](RIBs#What-makes-up-a-RIB)
+   * [Routers](RIBs#Routers)
+   * [Interactors](RIBs#Interactors)
+   * [Builders](RIBs#Builders)
+   * [Presenters](RIBs#Presenters)
+   * [View(Controllers)](RIBs#ViewControllers)
+   * [Components](RIBs#Components)
+* [Ownership](RIBs#Ownership)
 
 #### [Data & UI Flows](Data-UI-Flows)
 
