@@ -42,7 +42,7 @@ Views build and update the UI. This includes instantiating and laying out UI com
 ## State Management
 Application state is largely managed and represented by which RIBs are currently attached in the RIB tree. RIBs only make state decisions within their scope. For example, the LoggedIn RIB only makes state decisions for transitioning between states like Home, Confirmation, and Dispatching. It doesn’t make any decisions about how to behave once we’re on the Home screen. 
 
-<image here>
+**This might be a good spot to plop http://eng.uber.com/wp-content/uploads/2017/08/image7.gif **
 
 Naturally, not all state can be stored by the additional/removal of RIBs. For example, when an user’s name changes no RIB is attached or detached. Typically, we store this state inside streams of immutable models. For example, the user’s name may be stored in a ProfileDataStream that lives inside the LoggedIn scope. Only network responses have write access to this stream. We pass an interface that provides read access to these streams down the DI graph.
 
