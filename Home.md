@@ -1,3 +1,5 @@
+This wiki provides an overview of how RIBs are designed. If you want to understand RIBs in detail, work through the tutorials.
+
 ## What are RIBs For?
 RIBs are Uber’s cross-platform architecture framework. This framework is designed for large mobile applications that contain lots of volatile server driven state. 
 
@@ -6,7 +8,7 @@ When designing this framework, we emphasized the following principles:
 * **Minimize Global States and Decisions** Global state changes cause unpredictable behavior and can make it impossible for engineers to know the full impact of their changes.
 * **Structured around Business Logic** The app’s business logic structure should not need to strictly mirror the structure of the UI. For example: to facilitate animations and view performance the view hierarchy may want to be shallower than the router hierarchy. Or, a single feature RIB may control the appearance of three non-continquous views.
 * **Explicit Contracts Requirements** should be declared with compile safe contracts. A class should not compile if it’s class dependencies and ordering dependencies are not satisfied. We use ReactiveX to represent ordering dependencies, type safe DI systems to represent class dependencies and many DI scopes to encourage the creation of data invariants.
-* Separating Logic Types Merging business and view logic into single classes make systems harder to understand, modify and test.
+* **Separating Logic Types** Merging business and view logic into single classes make systems harder to understand, modify and test.
 * **Easy Decoupling** It must be trivial to extract features into their own compilation units for the sake of code reuse, build performance or enforcing encapsulation of responsibilities.
 * **Open-Closed Principle** Whenever possible, it should be possible to add features without modifying existing code. This can be seen in a few places when using RIBs. For ex: you can attach/build a complex child RIB that requires a uses of dependencies from its parent without almost no changes to the parent.
 
