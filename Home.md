@@ -1,3 +1,5 @@
+Edits are currently being made in https://docs.google.com/document/d/1yw-WBzWqbMFdW-zsEqbLBt3ijKiaQdFkWR1gQjKvxmo/edit?ts=59e09a3f#heading=h.v5csdjewrc11 
+
 This wiki provides an overview of how RIBs are designed. If you want to understand RIBs in detail, work through the tutorials.
 
 ## What are RIBs For?
