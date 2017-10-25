@@ -1,5 +1,4 @@
-
-![RIBs](https://github.com/uber/ribs/blob/assets/rib_horizontal_black.png)
+<img src="https://github.com/uber/ribs/blob/assets/rib_horizontal_black.png" width="450" height="196" alt="RIBs"/>
 
 Edits are currently being made in https://docs.google.com/document/d/1yw-WBzWqbMFdW-zsEqbLBt3ijKiaQdFkWR1gQjKvxmo/edit?ts=59e09a3f#heading=h.v5csdjewrc11 
 
