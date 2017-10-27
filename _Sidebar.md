@@ -1,17 +1,19 @@
 #### [RIBs](RIBs)
-* [Background](RIBs#Background)
-* [What makes up a RIB?](RIBs#What-makes-up-a-RIB)
-   * [Routers](RIBs#Routers)
-   * [Interactors](RIBs#Interactors)
-   * [Builders](RIBs#Builders)
-   * [Presenters](RIBs#Presenters)
-   * [View(Controllers)](RIBs#ViewControllers)
-   * [Components](RIBs#Components)
-* [Ownership](RIBs#Ownership)
-#### [Data & UI Flows](Data-UI-Flows)
-#### [RIB Classes and Naming](RIB-Classes-and-Naming)
-#### [State Management](State-Management)
-#### [Tools](Tools)
-#### [Platform Specifics](Platform-Specifics)
-* [Android](Platform-Specifics#Android)
-* [iOS](Platform-Specifics#iOS)
+
+#### Tutorials
+
+These tutorials are designed to get you aquatinted with the core conspects of RIBs.
+
+###### Tutorial 1
+[iOS](iOS/Tutorial-1) [Android](Android/Tutorial-1)
+
+###### Tutorial 2
+[iOS](iOS/Tutorial-2) [Android](Android/Tutorial-2)
+
+###### Tutorial 3
+[iOS](iOS/Tutorial-3) [Android](Android/Tutorial-3)
+
+###### Tutorial 4
+[iOS](iOS/Tutorial-4) [Android](Android/Tutorial-4)
+
+
