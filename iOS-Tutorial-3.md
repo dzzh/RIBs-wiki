@@ -1,4 +1,4 @@
-# RIB DI and Communication
+# RIB Dependency Injection and Communication
 
 The main goals of this exercise to understand the following concepts:
 - Pass dynamic dependency via Builder’s build method.
