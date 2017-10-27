@@ -1,4 +1,4 @@
-#### [RIBs](RIBs)
+#### [RIBs Documentation](RIBs)
 
 These tutorials are designed to get you aquatinted with the core conspects of RIBs.
 
