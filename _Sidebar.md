@@ -1,6 +1,6 @@
-#### [RIBs Documentation](RIBs)
+#### [RIBs Documentation](Home)
 
-These tutorials are designed to get you aquatinted with the core conspects of RIBs.
+Once you've read through the documentation, learn the core concepts of RIBs by running through these tutorials
 
 ###### Tutorial 1
 [iOS](iOS-Tutorial-1), [Android](Android-Tutorial-1)
