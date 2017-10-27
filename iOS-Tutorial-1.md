@@ -1,3 +1,5 @@
+# Create your first RIB
+
 The goal of this exercise is to understand the various pieces of a RIB, and more importantly, how they interact and communicate with each other. At the end of this exercise, we should have an app that launches into a screen where the user can type in player names and tap on a login button. Tapping the button should then print player names to the Xcode console.  
 ![image1](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial1-create-a-rib/images/image1.jpg)
 
