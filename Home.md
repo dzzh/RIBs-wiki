@@ -67,13 +67,13 @@ When an Interactor makes a business logic decision it may need to inform another
 Typically, if communication is downward to a child RIB we pass this information as emissions into Rx streams. Or, the data may be included as a parameter to a child RIB’s build() method, in which case this parameter becomes an invariant for the lifetime of the child.
 
 <p align="center">
-<img src="https://github.com/uber/ribs/blob/assets/documentation/stream.png" width="400" alt="RIBs"/><br/>Example of downwards communication via Rx. Lines denote RIB hierarchy.
+<img src="https://github.com/uber/ribs/blob/assets/documentation/stream.png" width="450" alt="RIBs"/><br/>Example of downwards communication via Rx. Lines denote RIB hierarchy.
 </p>
 
 If communication is going up the RIB tree to a parent RIB’s Interactor, then the communication is done via a listener interface since the parent can outlive the child. The parent RIB, or some object on its DI graph, implements the listener interface and places it on its DI graph so that its children RIBs can invoke it. Using this pattern to pass data upwards instead of having parents directly subscribe to rx streams from their children has a few benefits. It prevents memory leaks, it allows parents to be written, tested and maintained without knowledge of which children are attached,  and it reduces the amount of ceremony needed to attach/detach a child RIB. No Rx streams or listeners need to be unregistered/re-registered when attaching a child RIB this way.
 
 <p align="center">
-<img src="https://github.com/uber/ribs/blob/assets/documentation/listener.png" width="300" alt="RIBs"/><br/>
+<img src="https://github.com/uber/ribs/blob/assets/documentation/listener.png" width="250" alt="RIBs"/><br/>
 Example of upwards communication with a listener interface. Lines denote RIB hierarchy.
 </p>
 
