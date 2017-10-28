@@ -22,7 +22,7 @@ Structured around Business Logic: The app’s business logic structure should no
 If you’re familiar with VIPER then the class breakdown of RIBs will look familiar. RIBs are commonly made up of the following classes (one of each):
 
 <p align="center">
-<img src="https://github.com/uber/ribs/blob/assets/documentation/ribs.png" width="75%" height="75%" alt="RIBs"/>
+<img src="https://github.com/uber/ribs/blob/assets/documentation/ribs.png" width="8000" alt="RIBs"/>
 </p>
 
 ### Interactors
