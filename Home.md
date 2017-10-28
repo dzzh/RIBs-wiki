@@ -21,36 +21,32 @@ Structured around Business Logic: The app’s business logic structure should no
 
 If you’re familiar with VIPER then the class breakdown of RIBs will look familiar. RIBs are commonly made up of the following classes (one of each):
 
-[Insert image]
+<p align="center">
+<img src="https://github.com/uber/ribs/blob/assets/documentation/ribs.png" width="75%" height="75%" alt="RIBs"/>
+</p>
 
-* Router
-* Interactor
-* Builder
-* Presenter (optional)
-* View (optional)
-
-#### Interactors
+### Interactors
 The class that performs business logic. This is where you perform Rx subscriptions, make state altering decisions, decide where/what data to store and decide what other RIBs should be attached as children. 
 
 All operations performed by an Interactor must be confined to its lifecycle. We’ve built tooling to ensure business logic is only executed when the Interactor is active. This prevents scenarios where Interactors are deactivated, but subscriptions still fire and cause unwanted updates to business or UI states.
 
 
-#### Routers
-Router’s listen to Interactors, and translate their outputs into attaching and detaching child RIBs. Routers exist for three simple reasons:
+### Router
+Routers listen to Interactors, and translate their outputs into attaching and detaching child RIBs. Routers exist for three simple reasons:
 * They act as Humble Objects that make it easier to test complex Interactor logic without needing to think-about/mock child Interactors.
 * By creating an additional layer between each Interactor and child Interactor, Routers make synchronous communication between Interactors a tiny bit harder, thereby encouraging adoption of reactive communication instead of direct coupling between RIBs.
 * By separating out the simple and repetitive routing logic from the complex business logic inside interactors, the business logic inside interactors becomes easier to parse and understand. 
 
 
-#### Builder
+### Builder
 The Builder’s responsibility is to instantiate all the RIB’s constituent classes plus the Builder for each RIB’s children. 
 
 Separating the class creation logic in the builder adds support for mockability on iOS and DI independence. Only the Builder is aware of the DI system used in your project. As a result of this, much of your app can be written in a DI tool independent way. Your project can use different DI tools per RIB.
 
-#### Presenter
+### Presenter
 Presenters are stateless classes that translate business models into view models and vice versa. This type of class can be useful to facilitate testing view-model transformations. However, often this translation is so trivial that it doesn’t warrant the creation of a Presenter class. In this case you can omit the creation of a Presenter class. You do this by inlining the model translation into the view/view-controller or Interactor. Or doing the transformation implicitly.
 
-#### View(Controller)
+### View(Controller)
 Views build and update the UI. This includes instantiating and laying out UI components, handling user interaction, filling UI components with data, and animations. Views are designed to be as “dumb” as possible. They just display information. In general, they don’t contain any code that needs to be unit tested.
 
 ## State Management
@@ -70,11 +66,16 @@ When an Interactor makes a business logic decision it may need to inform another
 
 Typically, if communication is downward to a child RIB we pass this information as emissions into Rx streams. Or, the data may be included as a parameter to a child RIB’s build() method, in which case this parameter becomes an invariant for the lifetime of the child.
 
-[Insert image]
+<p align="center">
+<img src="https://github.com/uber/ribs/blob/assets/documentation/stream.png" width="55%" height="55%" alt="RIBs"/><br/>Example of downwards communication via Rx. Lines denote RIB hierarchy.
+</p>
 
 If communication is going up the RIB tree to a parent RIB’s Interactor, then the communication is done via a listener interface since the parent can outlive the child. The parent RIB, or some object on its DI graph, implements the listener interface and places it on its DI graph so that its children RIBs can invoke it. Using this pattern to pass data upwards instead of having parents directly subscribe to rx streams from their children has a few benefits. It prevents memory leaks, it allows parents to be written, tested and maintained without knowledge of which children are attached,  and it reduces the amount of ceremony needed to attach/detach a child RIB. No Rx streams or listeners need to be unregistered/re-registered when attaching a child RIB this way.
 
-[Insert image]
+<p align="center">
+<img src="https://github.com/uber/ribs/blob/assets/documentation/listener.png" width="28%" height="28%" alt="RIBs"/><br/>
+Example of upwards communication with a listener interface. Lines denote RIB hierarchy.
+</p>
 
 
 ## RIB Tooling
