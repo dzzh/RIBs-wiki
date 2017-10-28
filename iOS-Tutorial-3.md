@@ -3,7 +3,7 @@
 The main goals of this exercise to understand the following concepts:
 - Pass dynamic dependency via Builder’s build method.
 - Pass static dependencies using the DI tree.
-  - **Swift extension based dependency conformance.**
+  - Swift extension based dependency conformance.
 - Rx stream lifecycle management using RIB lifecycle.
 
 ## Pass player names as dynamic dependencies from Root to LoggedIn via LoggedInBuilder’s build method
