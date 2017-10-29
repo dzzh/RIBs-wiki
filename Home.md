@@ -52,7 +52,9 @@ Views build and update the UI. This includes instantiating and laying out UI com
 ## State Management
 Application state is largely managed and represented by which RIBs are currently attached in the RIB tree. For example, as the user progresses through different states in a simplified ride sharing app the app attaches and detaches the following RIBs (see gif below).
 
-[Insert image]
+<p align="center">
+<img src="https://github.com/uber/ribs/blob/assets/documentation/state.gif" alt="State"/>
+</p>
 
 RIBs only make state decisions within their scope. For example, the LoggedIn RIB only makes state decisions for transitioning between states like Request, and OnTrip. It doesn’t make any decisions about how to behave once we’re on the OnTrip screen. 
 
