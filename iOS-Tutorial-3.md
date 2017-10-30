@@ -99,8 +99,8 @@ final class OffGameBuilder: Builder<OffGameDependency>, OffGameBuildable {
 }
 ```
 ```swift
-let player1Name: String
-let player2Name: String
+private let player1Name: String
+private let player2Name: String
 
 init(player1Name: String, player2Name: String) {
     self.player1Name = player1Name
