@@ -65,3 +65,7 @@ protocol LoggedOutPresentableListener: class {
 
 * Notice that both player names are optional, since the user may not have entered anything. We could disable the Login button until both names are entered, but for this exercise, we’ll let the LoggedOutInteractor deal with the business logic of handling nil names.
 * If player names are empty, we default to "Player 1" and "Player 2".
+
+
+## Tutorial complete
+Congratulations! You just created your first RIB. Now onwards to [tutorial 2](iOS-Tutorial-2)
