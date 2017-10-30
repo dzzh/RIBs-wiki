@@ -68,4 +68,4 @@ protocol LoggedOutPresentableListener: class {
 
 
 ## Tutorial complete
-Congratulations! You just created your first RIB. Now onwards to [tutorial 2](iOS-Tutorial-2)
+Congratulations! You just created your first RIB. Now onwards to [tutorial 2](iOS-Tutorial-2).
