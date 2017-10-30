@@ -1,10 +1,10 @@
 # RIBs Dependency Injection and Communication
 
-> Note: If you haven't completed [tutorial 2](tutorial-2-ios) yet, we encourage you to do so before jumping into this tutorial.
+> Note: If you haven't completed [tutorial 2](iOS-Tutorial-2) yet, we encourage you to do so before jumping into this tutorial.
 
 Welcome to the RIBs tutorials, which have ben designed to give you a hands-on walkthrough through the core concepts of RIBs. As part of the tutorials, you'll be building a simple TicTacToe game using the RIBs architecture and associated tooling.
 
-For tutorial 3, we'll start off where [tutorial 2](tutorial-2-ios) ended. You can either continue with the project you completed in [tutorial 2](tutorial-2-ios), or use the source code [here](https://github.com/uber/RIBs/tree/master/ios/tutorials/tutorial3). Follow the [README](https://github.com/uber/RIBs/tree/master/ios/tutorials/tutorial3/README.md) to install and open the project before reading any further.
+For tutorial 3, we'll start off where [tutorial 2](iOS-Tutorial-2) ended. You can either continue with the project you completed in [tutorial 2](iOS-Tutorial-2), or use the source code [here](https://github.com/uber/RIBs/tree/master/ios/tutorials/tutorial3). Follow the [README](https://github.com/uber/RIBs/tree/master/ios/tutorials/tutorial3/README.md) to install and open the project before reading any further.
 
 ## Goals
 
