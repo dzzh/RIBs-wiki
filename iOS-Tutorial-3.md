@@ -315,3 +315,7 @@ func gameDidEnd(withWinner winner: PlayerType?) {
 So far when the game ends, we have a fixed alert that shows either “Player 1” or “Player 2” has won. Let’s pass down the player names from LoggedIn to TicTacToe scope and display the actual names in the alert instead.
 
 Our current TicTacToe will get stuck if the game is a tie. Let’s update the game logic as well as the necessary display and score keeping logic to handle the tie case.
+
+## Tutorial complete
+
+Congratulations! You completed tutorial 3. Now onwards to [tutorial 4](iOS-Tutorial-4).
