@@ -278,6 +278,6 @@ private func detachCurrentChild() {
 }
 ```
 
-## Solution
+## Tutorial completed
+You completed the second tutorial Now onwards to [tutorial 3](iOS-Tutorial-3).
 
-The completed solution can be found [here](../tutorial3-rib-di-and-communication).
