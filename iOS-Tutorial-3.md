@@ -262,10 +262,9 @@ func placeCurrentPlayerMark(atRow row: Int, col: Int) {
     board[row][col] = currentPlayer
     presenter.setCell(atRow: row, col: col, withPlayerType: currentPlayer)
 
-    let endGame = checkEndGame()
-    if endGame.didEnd {
-        presenter.announce(winner: endGame.winner) {
-            self.listener?.gameDidEnd(withWinner: endGame.winner)
+    if let winner = checkWinner() {
+        presenter.announce(winner: winner) {
+            self.listener?.gameDidEnd(withWinner: winner)
         }
     }
 }
