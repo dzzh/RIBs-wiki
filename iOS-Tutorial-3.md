@@ -139,6 +139,8 @@ func build(withListener listener: LoggedInListener, player1Name: String, player2
     let interactor = LoggedInInteractor(mutableScoreStream: component.mutableScoreStream)
 ```
 ```swift
+private let mutableScoreStream: MutableScoreStream
+
 init(mutableScoreStream: MutableScoreStream) {
     self.mutableScoreStream = mutableScoreStream
 }
