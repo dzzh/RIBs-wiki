@@ -172,6 +172,8 @@ func build(withListener listener: OffGameListener) -> OffGameRouting {
                                        scoreStream: component.scoreStream)
 ```
 ```swift
+private let scoreStream: ScoreStream
+
 init(presenter: OffGamePresentable,
      scoreStream: ScoreStream) {
     self.scoreStream = scoreStream
