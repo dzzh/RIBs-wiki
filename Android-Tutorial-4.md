@@ -52,9 +52,6 @@ The actions that need to happen for the workflow look like this:
 
 <img src="https://github.com/uber/RIBs/blob/assets/tutorial_assets/android/tutorial4_rib.png?raw=true" width="600">
 
-## Goals
-
-
 ## Creating ActionableItem Interfaces and Implementing Them
 
 Before we dive into coding this, I’d like to highlight the `Step` class. The `Step` type is what all actions must return (so Workflows can chain them together). Each step encapsulates a piece of work to be performed, it also has two generics - the first generic is an optional return type to be passed into the next step (if you don’t have a return value - you can use Step.NoValue), the second generic is the next actionable item interface that the user will be placed in when the step is finished doing its work. 
