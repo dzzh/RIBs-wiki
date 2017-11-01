@@ -2,6 +2,12 @@
 
 > Note: If you haven't completed [tutorial 3](Android-Tutorial-3) yet, we encourage you to do so before jumping into this tutorial.
 
+## Background
+
+... type safe parsing
+... deep link code in one place
+... handle reactivity
+
 ## Goals
 The goals of this code lab are to learn the following:
 * Understand basics behind RIB workflows
@@ -47,3 +53,111 @@ public Step<Step.NoValue, LoggedInActionableItem> logIn(final UserName playerOne
 All this does is attach the logged in router, and then return it as the next actionable item. There are a few subtle things worth noting here though:
 * All of the code that performs changes is wrapped within the Rx single. If you were to place code outside of this block, it would execute at the time the workflow is created, as opposed to when it is this actions turn to perform its work.
 * `attachLoggedIn()` has been updated to return the `LoggedInActionableItem` (which is really just the LoggedInInteractor behind an interface). We use the actionable item interface to have a clear list of actions that can be performed instead of just exposing the entire public API for the interactor.
+
+## Creating the Workflow
+### Step 1: Create the workflow
+
+Now that we have a single action defined, let’s create a workflow to test it out.  In your root package, create a new class called LaunchGameWorkflow and insert this boilerplate:
+
+```java
+
+public class LaunchGameWorkflow extends RootWorkflow<Step.NoValue, LaunchGameWorkflow.LaunchGameDeepLinkModel> {
+
+    public LaunchGameWorkflow(@NonNull Intent deepLinkIntent) {
+        super(deepLinkIntent);
+    }
+
+    @NonNull
+    @Override
+    protected Step<Step.NoValue, ? extends ActionableItem> getSteps(
+            @NonNull RootActionableItem rootActionableItem,
+            @NonNull LaunchGameDeepLinkModel launchGameDeepLinkModel) {
+        return null;
+    }
+
+    @NonNull
+    @Override
+    protected LaunchGameDeepLinkModel parseDeepLinkIntent(@NonNull Intent deepLinkIntent) {
+        return null;
+    }
+
+    @Validated(factory = TrainingSessionsValidationFactory.class)
+    public static class LaunchGameDeepLinkModel implements RootWorkflowModel {
+      // Unimplemented class
+    }
+}
+```
+
+This is obviously not fully implemented, but let’s look over a few details here before filling it out. First, let’s take a look at the generics - the first generic is the return type for the entire Workflow, in this case there is no return type. The second generic is the POJO model class that is used to hold information about the deep link.
+
+To create the pojo model, parseDeeplinkIntent will be implemented to convert an intent to a LaunchGameDeepLinkModel. In addition, the deeplink plugin will run this model through RAVE to ensure the data is valid.
+
+Next, the deep link model will be passed to getSteps() to create a workflow with the model and the initial root actionable item.
+
+First, let’s implement the the LaunchGameDeepLinkModel class and parseDeepLinkIntent method to properly pull out paramters into a model.
+
+Your LaunchGameDeepLinkModel should look like the following:
+
+```java
+@Validated(factory = TrainingSessionsValidationFactory.class)
+static class LaunchGameDeepLinkModel implements RootWorkflowModel {
+   private final String playerOneName;
+   private final String playerTwoName;
+   private final String gameName;
+
+   public LaunchGameDeepLinkModel(String playerOneName, String playerTwoName, String gameName) {
+       this.playerOneName = playerOneName;
+       this.playerTwoName = playerTwoName;
+       this.gameName = gameName;
+   }
+
+   @NonNull
+   public String getPlayerOneName() {
+       return playerOneName;
+   }
+
+   @NonNull
+   public String getPlayerTwoName() {
+       return playerTwoName;
+   }
+
+   @NonNull
+   public String getGameName() {
+       return gameName;
+   }
+}
+```
+
+Next we’ll implement parseDeepLink to turn the intent into a LaunchGameDeepLinkModel instance:
+
+```java
+@NonNull
+@Override
+protected LaunchGameDeepLinkModel parseDeepLinkIntent(@NonNull Intent deepLinkIntent) {
+  Uri uri = deepLinkIntent.getData();
+  String playerOne = uri.getQueryParameter("playerOne");
+  String playerTwo = uri.getQueryParameter("playerTwo");
+  String gameName = uri.getQueryParameter("gameKey");
+
+  return new LaunchGameDeepLinkModel(playerOne, playerTwo, gameName);
+}
+```
+
+In the event one of these parameters are missing, this model will fail [RAVE](https://github.com/uber-common/rave) validation and a workflow won’t be launched.
+
+Next, let’s implement getSteps() to return a single step to log the user in:
+
+```java
+@NonNull
+@Override
+protected Step<Step.NoValue, ? extends ActionableItem> getSteps(
+       @NonNull RootActionableItem rootActionableItem,
+       @NonNull LaunchGameDeepLinkModel launchGameDeepLinkModel) {
+   return rootActionableItem.logIn(
+           UserName.create(launchGameDeepLinkModel.getPlayerOneName()), UserName.create(launchGameDeepLinkModel.getPlayerTwoName()));
+}
+```
+
+### Step 2: Integrate the Workflow
+
+Now that we a workflow let’s integrate it. 
