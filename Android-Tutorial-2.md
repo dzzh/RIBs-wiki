@@ -1,4 +1,10 @@
-# RIB Tutorial 2: Composing RIBs to create features
+# Composing RIBs to create features
+
+> Note: If you haven't completed [tutorial 1](Android-Tutorial-1) yet, we encourage you to do so before jumping into this tutorial.
+
+Welcome to the RIBs tutorials, which have ben designed to give you a hands-on walkthrough through the core concepts of RIBs. As part of the tutorials, you'll be building a simple TicTacToe game using the RIBs architecture and associated tooling.
+
+For this tutorial, we'll start off where [tutorial 1](Android-Tutorial-1) ended. You can either continue with the project you completed in [tutorial 1](Android-Tutorial-1), or use the source code [here](https://github.com/uber/RIBs/tree/master/android/tutorials/tutorial2). Follow the [README](https://github.com/uber/RIBs/tree/master/android/tutorials/tutorial2/README.md) to open the project before reading any further.
 
 ## Prerequisites
 Understand the concepts from tutorial 1 and fully setup Android Studio and the Presidio plugin.
