@@ -1,6 +1,6 @@
 # Creating your first RIB
 
-Welcome to the tutorials, which have ben designed to give you a hands-on walkthrough through the core concepts of RIBs. As part of the tutorials, you'll be building a simple TicTacToe game using the RIBs architecture and associated tooling. 
+Welcome to the tutorials, which have been designed to give you a hands-on walkthrough through the core concepts of RIBs. As part of the tutorials, you'll be building a simple TicTacToe game using the RIBs architecture and associated tooling. 
 
 We've provided you with a project that contains the boilerplate for a new RIBs application. You can find the source files [here](https://github.com/uber/RIBs/tree/master/android/tutorials/tutorial1). Follow the [README](https://github.com/uber/RIBs/tree/master/android/tutorials/tutorial1/README.md) to open the project before reading any further.
 
