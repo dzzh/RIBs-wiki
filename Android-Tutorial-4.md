@@ -160,4 +160,60 @@ protected Step<Step.NoValue, ? extends ActionableItem> getSteps(
 
 ### Step 2: Integrate the Workflow
 
-Now that we a workflow let’s integrate it. 
+Now that we a workflow let’s integrate it. Open up `WorkflowFactory` and add your workflow to the list.
+
+### Step 3: Test it out
+Now that all this wiring is done let’s test it out. You can launch the app using the example URL via adb:
+`adb shell am start -a "android.intent.action.VIEW -d rib-tutorials://launchGame?playerOne=PlayerOne\&playerTwo=PlayerTwo\&gameKey=TicTacToe"`
+
+You should see the app launch in a logged in state.
+
+## Routing the User to the Specific Game
+
+Now that most of the plumbing is done, let’s add the remaining steps.
+
+### Step 1: Add a new action to route the user to their selected game.
+
+First, let’s add a new method to the LoggedInActionableItem interface:
+```java
+Step<Step.NoValue, LoggedInActionableItem> launchGame(String gameKey);
+```
+
+Implementing this method in LoggedInInteractor is left as an exercise to the reader. Here are some tips:
+* A list of games is now available in LoggedInInteractor.
+* Be sure to perform work in a deferred Single.
+* If a game is not available, just `Log.e()` for now
+
+### Step 2: Add the new action to the workflow
+
+Now that we have the new action, the workflow needs to be updated to use it:
+
+```java
+@NonNull
+@Override
+protected Step<Step.NoValue, ? extends ActionableItem> getSteps(
+       @NonNull RootActionableItem rootActionableItem,
+       @NonNull final LaunchGameDeepLinkModel launchGameDeepLinkModel) {
+   return rootActionableItem.logIn(
+           UserName.create(launchGameDeepLinkModel.getPlayerOneName()),
+           UserName.create(launchGameDeepLinkModel.getPlayerTwoName())
+   ).onStep(
+           new BiFunction<Step.NoValue, LoggedInActionableItem, Step<Step.NoValue, LoggedInActionableItem>>() {
+               @Override
+               public Step<Step.NoValue, LoggedInActionableItem> apply(
+                       Step.NoValue noValue, LoggedInActionableItem loggedInActionableItem) {
+                   return loggedInActionableItem.launchGame(launchGameDeepLinkModel.getGameName());
+               }
+           });
+}
+```
+
+Note the usage of the onStep method here - this allows you to chain steps together.
+
+### Step 3: Test it out
+Let’s test it again with the example link:
+`adb shell am start -a "android.intent.action.VIEW -d rib-tutorials://launchGame?playerOne=PlayerOne\&playerTwo=PlayerTwo\&gameKey=TicTacToe"`
+
+Now, the app should launch into TicTacToe with the correct player names.
+
+
