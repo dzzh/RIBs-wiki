@@ -342,3 +342,9 @@ Some example ideas include:
 * Ensuring OffGame correctly sets the scores when the score stream emits.
 * Ensuring the TicTacToe RIB correctly calls its listener when a game ends.
 * Ensuring the OffGameView properly formats score data.
+
+## Tutorial complete
+
+Congratulations! You completed tutorial 3. The completed source for this tutorial can be found [here].(https://github.com/uber/RIBs/tree/master/android/tutorials/tutorial3-completed)
+
+Now onwards to [tutorial 4](Android-Tutorial-4).
