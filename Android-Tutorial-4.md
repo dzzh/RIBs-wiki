@@ -2,16 +2,46 @@
 
 > Note: If you haven't completed [tutorial 3](Android-Tutorial-3) yet, we encourage you to do so before jumping into this tutorial.
 
-## Background
-
-... type safe parsing
-... deep link code in one place
-... handle reactivity
-
 ## Goals
 The goals of this code lab are to learn the following:
 * Understand basics behind RIB workflows
 * Learn how to create actionable item interfaces, implement their methods, and create workflows to launch specifics flows via deeplinks.
+
+## Background
+
+The RIB deeplinking method is designed with the following goals in mind:
+
+* Define every step in a deeplink's workflow in a single place despite acting over many places in the code base
+* Should *not* be broken silently when app refactorings are made. If you introduce a gap in a workflow's chain it will no longer compile
+* Should be tolerant of entering the app in a state other than the intended app state. For example: capable of waiting for the user to login or begin a trip.
+
+Complex deeplinking behaviors can be built like the following example:
+
+```java
+@Override
+protected Step<Step.NoValue, ? extends ActionableItem> getSteps(
+    final RootActionableItem rootActionableItem,
+    final ScheduledRidesDeepLink scheduledRidesDeepLink) {
+  return rootActionableItem
+      .waitUntilSignedIn()
+      .onStep((noValue, rootSignedInActionableItem) -> rootSignedInActionableItem.goToLoggedIn())
+      .onStep((value, loggedInActionableItem) -> loggedInActionableItem.goToRide())
+      .onStep((noValue, rideActionableItem) -> rideActionableItem.isOnTrip())
+      .onStep((isOnTrip, rideActionableItem) -> {
+            if (isOnTrip) {
+              // Terminate the flow
+              return Step.fromOptional(Single.just(Optional.absent()));
+            } else {
+              return rideActionableItem.waitForRequest();
+            }
+          })
+      .onStep((noValue, addressEntryActionableItem) -> addressEntryActionableItem.waitForAddressEntry())
+      .onStep((noValue, addressEntryActionableItem) -> addressEntryActionableItem.showScheduledRideDatePicker(
+              scheduledRidesDeepLink.getSource()))
+      .onStep((noValue, addressEntryActionableItem) -> addressEntryActionableItem.getAddressEntryComponent())
+      .onStep((component, addressEntryActionableItem) -> showMessageAboutBeingAwesome(component));
+}
+```
 
 ## Overview
 This codelab will focus on adding a new workflow to launch the app and automatically set the player names and launch a new game.
