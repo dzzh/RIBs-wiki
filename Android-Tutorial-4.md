@@ -48,8 +48,9 @@ This codelab will focus on adding a new workflow to launch the app and automatic
 
 To save time, the AndroidManifest.xml file for the codelab has been updated to handle any URL with the `rib-tutorial` scheme. In addition, the workflow libraries have already been integrated into the tutorial 4 starter code.
 
+The actions that need to happen for the workflow look like this:
 
-...
+<img src="https://github.com/uber/RIBs/blob/assets/tutorial_assets/android/tutorial4_rib.png?raw=true" width="600">
 
 ## Goals
 
