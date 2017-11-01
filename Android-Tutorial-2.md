@@ -313,3 +313,6 @@ Build and install the game.
 ```
 
 You should now be able to login, see the OffGame RIB to start a game and fully play a full game of Tic Tac Toe.
+
+## Tutorial completed
+You completed the second tutorial Now onwards to [tutorial 3](Android-Tutorial-3).
