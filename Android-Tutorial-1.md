@@ -207,3 +207,6 @@ interRIB listeners.
 
 If you’re not happy with the code you wrote in this tutorial work you can start fresh next lesson
  by using the tutorial2 starter code.
+
+## Tutorial complete
+Congratulations! You just created your first RIB. Now onwards to [tutorial 2](Android-Tutorial-2).
