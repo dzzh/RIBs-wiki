@@ -58,8 +58,7 @@ Builder playerOne(@Named("player_one") UserName playerOne);
 Builder playerTwo(@Named("player_two") UserName playerTwo);
 ```
 
-NOTE:
-These dependencies are provided using the new BindsInstance Dagger API. It’s similar to using @Provides, but allows us to not have to pass the player names into the module via its constructor.
+> **NOTE:** These dependencies are provided using the new BindsInstance Dagger API. It’s similar to using @Provides, but allows us to not have to pass the player names into the module via its constructor.
 
 Now that Dagger knows about the new dependencies, we must go back and update the build method again to bind the variables:
 
