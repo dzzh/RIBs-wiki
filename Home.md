@@ -2,7 +2,7 @@
 <p> </p>
  
 
-<p align="center">_This wiki provides an overview of how RIBs are designed. If you want to understand RIBs in detail, work through the tutorials._</p>
+<p align="center">This wiki provides an overview of how RIBs are designed. If you want to understand RIBs in detail, work through the tutorials.</p>
 
 # What are RIBs For?
 RIBs is Uber’s cross-platform architecture framework. This framework is designed for large mobile applications that contain many nested states.
@@ -55,10 +55,8 @@ Views build and update the UI. This includes instantiating and laying out UI com
 Application state is largely managed and represented by which RIBs are currently attached in the RIB tree. For example, as the user progresses through different states in a simplified ride sharing app the app attaches and detaches the following RIBs (see GIF below).
 
 <p align="center">
-<img src="https://github.com/uber/ribs/blob/assets/documentation/state.gif" alt="State"/>
+<img src="https://github.com/uber/ribs/blob/assets/documentation/state.gif" alt="State"/><br/>Example of state transitions in which lines denote RIB hierarchy.
 </p>
-<p align="center">_Example of state transitions in which lines denote RIB hierarchy.
-_</p>
 
 RIBs only make state decisions within their scope. For example, the LoggedIn RIB only makes state decisions for transitioning between states like Request and OnTrip. It does not make any decisions about how to behave once we are on the OnTrip screen. 
 
@@ -73,14 +71,14 @@ When an Interactor makes a business logic decision it may need to inform another
 Typically, if communication is downward to a child RIB we pass this information as emissions into Rx streams. Or, the data may be included as a parameter to a child RIB’s build() method, in which case this parameter becomes an invariant for the lifetime of the child.
 
 <p align="center">
-<img src="https://github.com/uber/ribs/blob/assets/documentation/stream.png" width="450" alt="RIBs"/><br/>_Example of downwards communication via Rx. Lines denote RIB hierarchy._
+<img src="https://github.com/uber/ribs/blob/assets/documentation/stream.png" width="450" alt="RIBs"/><br/>Example of downwards communication via Rx. Lines denote RIB hierarchy.
 </p>
 
 If communication is going up the RIB tree to a parent RIB’s Interactor, then the communication is done via a listener interface since the parent can outlive the child. The parent RIB, or some object on its DI graph, implements the listener interface and places it on its DI graph so that its children RIBs can invoke it. Using this pattern to pass data upwards instead of having parents directly subscribe to rx streams from their children has a few benefits. It prevents memory leaks, allows parents to be written, tested and maintained without knowledge of which children are attached, and reduces the amount of ceremony needed to attach/detach a child RIB. No Rx streams or listeners need to be unregistered/re-registered when attaching a child RIB this way.
 
 <p align="center">
 <img src="https://github.com/uber/ribs/blob/assets/documentation/listener.png" width="250" alt="RIBs"/><br/>
-_Example of upwards communication with a listener interface. Lines denote RIB hierarchy._
+Example of upwards communication with a listener interface. Lines denote RIB hierarchy.
 </p>
 
 
