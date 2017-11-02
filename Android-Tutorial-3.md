@@ -52,10 +52,10 @@ In addition to passing in the player names, we must add an entry to the Dagger c
 New methods added to the module in the LoggedInBuilder’s component builder:
 ```java
 @BindsInstance
-Builder playerOne(@Named("player_one") UserName playerOne);
+Builder playerOne(@Named("player_one") String playerOne);
 
 @BindsInstance
-Builder playerTwo(@Named("player_two") UserName playerTwo);
+Builder playerTwo(@Named("player_two") String playerTwo);
 ```
 
 > **NOTE:** These dependencies are provided using the new BindsInstance Dagger API. It’s similar to using @Provides, but allows us to not have to pass the player names into the module via its constructor.
