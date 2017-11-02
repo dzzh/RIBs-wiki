@@ -1,6 +1,8 @@
 <img src="https://github.com/uber/ribs/blob/assets/rib_horizontal_black.png" width="450" height="196" alt="RIBs"/>
 
-TThis wiki provides an overview of how RIBs are designed. If you want to understand RIBs in detail, work through the tutorials.
+
+
+This wiki provides an overview of how RIBs are designed. If you want to understand RIBs in detail, work through the tutorials.
 What are RIBs For?
 RIBs is Uber’s cross-platform architecture framework. This framework is designed for large mobile applications that contain many nested states.
 
