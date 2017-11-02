@@ -72,7 +72,7 @@ presenter
 Since the builder needs to get the listener from somewhere, you’ll now need to modify LoggedOutBuilder. Update LoggedOutBuilder’s ParentComponent interface. This is the interface that declares all dependencies that LoggedOut’s parent needs to fulfill.
 
 ```java
-public interface ParentComponent extends LoggedOutOptionalExtension.ParentComponent {
+public interface ParentComponent {
   LoggedOutInteractor.Listener listener();
 }
 ```
