@@ -1,21 +1,17 @@
 <img src="https://github.com/uber/ribs/blob/assets/rib_horizontal_black.png" width="450" height="196" alt="RIBs"/>
 
-Edits are currently being made in https://docs.google.com/document/d/1yw-WBzWqbMFdW-zsEqbLBt3ijKiaQdFkWR1gQjKvxmo/edit?ts=59e09a3f#heading=h.v5csdjewrc11 
-
-This wiki provides an overview of how RIBs are designed. If you want to understand RIBs in detail, work through the tutorials.
-
-## What are RIBs For?
-
+TThis wiki provides an overview of how RIBs are designed. If you want to understand RIBs in detail, work through the tutorials.
+What are RIBs For?
 RIBs is Uber’s cross-platform architecture framework. This framework is designed for large mobile applications that contain many nested states.
 
-When designing this framework, we emphasized the following principles:
-* **Encourage Cross-Platform Collaboration:** Most of the complex parts of our apps are similar on both iOS and Android. RIBs present similar development patterns for Android and iOS. By using RIBs. Engineers across both iOS and Android platforms can share a single, co-designed architecture for their features.
-* **Minimize Global States and Decisions:** Global state changes cause unpredictable behavior and can make it impossible for engineers to know the full impact of their changes. RIBs encourages encapsulating states within well isolated individual RIBs, thus avoiding global state issues.
-* **Testability and Isolation:** Classes must be easy to unit test and reason about in isolation. Similar to VIPER, RIBs pragmatically interpret the ideas behind Clean Architecture. Individual RIB classes have distinct responsibilities (ex: routing, business, view logic, creation). Most RIB logic is decoupled from child RIB logic. This makes it easier to unit test and reason about each RIB’s classes and makes it easier to test and reason about whole RIBs independently of other RIBs.
-* **Tooling for Developer Productivity:** Adopting non-trivial architecture patterns does not scale beyond small applications without robust tooling. RIBs come with IDE tooling around code generation, static analysis and runtime integrations - all of which improve developer productivity for large teams and small.
-* **Open-Closed Principle:** Whenever possible, it should be possible to add features without modifying existing code. This can be seen in a few places when using RIBs. For ex: you can attach/build a complex child RIB that requires uses of dependencies from its parent without almost no changes to the parent.
-Structured around Business Logic: The app’s business logic structure should not need to strictly mirror the structure of the UI. For example: to facilitate animations and view performance the view hierarchy may want to be shallower than the RIB hierarchy. Or, a single feature RIB may control the appearance of three views that appear different places in the UI.
-* **Explicit Contracts:** Requirements should be declared with compile-time safe contracts. A class should not compile if its class dependencies and ordering dependencies are not satisfied. We use [ReactiveX](http://reactivex.io/) to represent ordering dependencies, type safe DI systems to represent class dependencies and many DI scopes to encourage the creation of data invariants.
+When designing this framework for Uber, we emphasized the following principles:
+* **Encourage Cross-Platform Collaboration:** Most of the complex parts of our apps are similar on both iOS and Android. RIBs present similar development patterns for Android and iOS. By using RIBs, engineers across both iOS and Android platforms can share a single, co-designed architecture for their features.
+* **Minimize Global States and Decisions:** Global state changes cause unpredictable behavior and can make it impossible for engineers to know the full impact of their changes. RIBs encourage encapsulating states within a deep hierarchy of well-isolated individual RIBs, thus avoiding global state issues.
+* **Testability and Isolation:** Classes must be easy to unit test and reason about in isolation. Individual RIB classes have distinct responsibilities (i.e.,: routing, business, view logic, creation). Plus, most RIB logic is decoupled from child RIB logic. This makes RIB classes easy to test and reason about independently.
+* **Tooling for Developer Productivity:** Adopting non-trivial architecture patterns does not scale beyond small applications without robust tooling. RIBs come with IDE tooling around code generation, static analysis and runtime integrations--all of which improve developer productivity for large teams and small.
+* **Open-Closed Principle:** Whenever possible, it should be possible to add features without modifying existing code. This can be seen in a few places when using RIBs. For example: you can attach/build a complex child RIB that requires uses of dependencies from its parent without almost no changes to the parent.
+* **Structured around Business Logic:** The app’s business logic structure should not need to strictly mirror the structure of the UI. For example: to facilitate animations and view performance the view hierarchy may want to be shallower than the RIB hierarchy. Or, a single feature RIB may control the appearance of three views that appear different places in the UI.
+* **Explicit Contracts:** Requirements should be declared with compile-time safe contracts. A class should not compile if its class dependencies and ordering dependencies are not satisfied. We use ReactiveX to represent ordering dependencies, type safe DI systems to represent class dependencies and many DI scopes to encourage the creation of data invariants.
 
 ## Parts of a RIB
 
