@@ -16,21 +16,21 @@ When designing this framework for Uber, we emphasized the following principles:
 * **Explicit Contracts:** Requirements should be declared with compile-time safe contracts. A class should not compile if its class dependencies and ordering dependencies are not satisfied. We use ReactiveX to represent ordering dependencies, type safe DI systems to represent class dependencies and many DI scopes to encourage the creation of data invariants.
 
 ## Parts of a RIB
-
 If you’re familiar with VIPER then the class breakdown of RIBs will look familiar. RIBs are commonly made up of the following classes (one of each):
 
 <p align="center">
 <img src="https://github.com/uber/ribs/blob/assets/documentation/ribs.png" width="800" alt="RIBs"/>
 </p>
 
+
 ### Interactors
-The class that performs business logic. This is where you perform Rx subscriptions, make state altering decisions, decide where/what data to store and decide what other RIBs should be attached as children. 
+The class that performs business logic. This is where you perform Rx subscriptions, make state altering decisions, decide where/what data to store, and decide what other RIBs should be attached as children. 
+All operations performed by an Interactor must be confined to its lifecycle. We have built tooling to ensure business logic is only executed when the Interactor is active. This prevents scenarios where Interactors are deactivated, but subscriptions still fire and cause unwanted updates to business or UI states.
 
-All operations performed by an Interactor must be confined to its lifecycle. We’ve built tooling to ensure business logic is only executed when the Interactor is active. This prevents scenarios where Interactors are deactivated, but subscriptions still fire and cause unwanted updates to business or UI states.
 
+### Routers
+Router’s listen to Interactors, and translate their outputs into attaching and detaching child RIBs. Routers exist for three simple reasons:
 
-### Router
-Routers listen to Interactors, and translate their outputs into attaching and detaching child RIBs. Routers exist for three simple reasons:
 * They act as Humble Objects that make it easier to test complex Interactor logic without needing to think-about/mock child Interactors.
 * By creating an additional layer between each Interactor and child Interactor, Routers make synchronous communication between Interactors a tiny bit harder, thereby encouraging adoption of reactive communication instead of direct coupling between RIBs.
 * By separating out the simple and repetitive routing logic from the complex business logic inside interactors, the business logic inside interactors becomes easier to parse and understand. 
@@ -41,24 +41,29 @@ The Builder’s responsibility is to instantiate all the RIB’s constituent cla
 
 Separating the class creation logic in the builder adds support for mockability on iOS and DI independence. Only the Builder is aware of the DI system used in your project. As a result of this, much of your app can be written in a DI tool independent way. Your project can use different DI tools per RIB.
 
+
 ### Presenter
 Presenters are stateless classes that translate business models into view models and vice versa. This type of class can be useful to facilitate testing view-model transformations. However, often this translation is so trivial that it doesn’t warrant the creation of a Presenter class. In this case you can omit the creation of a Presenter class. You do this by inlining the model translation into the view/view-controller or Interactor. Or doing the transformation implicitly.
 
-### View(Controller)
-Views build and update the UI. This includes instantiating and laying out UI components, handling user interaction, filling UI components with data, and animations. Views are designed to be as “dumb” as possible. They just display information. In general, they don’t contain any code that needs to be unit tested.
+
+### View_(Controller)_
+Views build and update the UI. This includes instantiating and laying out UI components, handling user interaction, filling UI components with data, and animations. Views are designed to be as “dumb” as possible. They just display information. In general, they do not contain any code that needs to be unit tested.
+
 
 ## State Management
-Application state is largely managed and represented by which RIBs are currently attached in the RIB tree. For example, as the user progresses through different states in a simplified ride sharing app the app attaches and detaches the following RIBs (see gif below).
+Application state is largely managed and represented by which RIBs are currently attached in the RIB tree. For example, as the user progresses through different states in a simplified ride sharing app the app attaches and detaches the following RIBs (see GIF below).
 
 <p align="center">
 <img src="https://github.com/uber/ribs/blob/assets/documentation/state.gif" alt="State"/>
 </p>
+<p align="center">_Example of state transitions in which lines denote RIB hierarchy.
+_</p>
 
-RIBs only make state decisions within their scope. For example, the LoggedIn RIB only makes state decisions for transitioning between states like Request, and OnTrip. It doesn’t make any decisions about how to behave once we’re on the OnTrip screen. 
+RIBs only make state decisions within their scope. For example, the LoggedIn RIB only makes state decisions for transitioning between states like Request and OnTrip. It does not make any decisions about how to behave once we are on the OnTrip screen. 
 
-Not all state can be stored by the addition/removal of RIBs. For example, when an user’s profile settings change no RIB is attached or detached. Typically, we store this state inside streams of immutable models that re-emit when details change. For example, the user’s name may be stored in a ProfileDataStream that lives inside the LoggedIn scope. Only network responses have write access to this stream. We pass an interface that provides read access to these streams down the DI graph.
+Not all state can be stored by the addition/removal of RIBs. For example, when a user’s profile settings change no RIB is attached or detached. Typically, we store this state inside streams of immutable models that re-emit when details change. For example, the user’s name may be stored in a ProfileDataStream that lives inside the LoggedIn scope. Only network responses have write access to this stream. We pass an interface that provides read access to these streams down the DI graph.
 
-There is nothing in RIBs that forces a single source of truth for RIB state. This is in contrast to what some opinionated frameworks, like React, already provide out of the box.  Within the context of each RIB, you can choose to adopt patterns that promote unidirectional data flow. Or you can allow business state and view state to temporarily diverge in order to take advantage of efficient platform animation frameworks.
+There is nothing in RIBs that forces a single source of truth for RIB state. This is in contrast to what some opinionated frameworks, like React, already provide out of the box.  Within the context of each RIB, you can choose to adopt patterns that promote unidirectional data flow, orr you can allow business state and view state to temporarily diverge in order to take advantage of efficient platform animation frameworks.
 
 
 ## Communication Between RIBs
@@ -67,25 +72,30 @@ When an Interactor makes a business logic decision it may need to inform another
 Typically, if communication is downward to a child RIB we pass this information as emissions into Rx streams. Or, the data may be included as a parameter to a child RIB’s build() method, in which case this parameter becomes an invariant for the lifetime of the child.
 
 <p align="center">
-<img src="https://github.com/uber/ribs/blob/assets/documentation/stream.png" width="450" alt="RIBs"/><br/>Example of downwards communication via Rx. Lines denote RIB hierarchy.
+<img src="https://github.com/uber/ribs/blob/assets/documentation/stream.png" width="450" alt="RIBs"/><br/>_Example of downwards communication via Rx. Lines denote RIB hierarchy._
 </p>
 
-If communication is going up the RIB tree to a parent RIB’s Interactor, then the communication is done via a listener interface since the parent can outlive the child. The parent RIB, or some object on its DI graph, implements the listener interface and places it on its DI graph so that its children RIBs can invoke it. Using this pattern to pass data upwards instead of having parents directly subscribe to rx streams from their children has a few benefits. It prevents memory leaks, it allows parents to be written, tested and maintained without knowledge of which children are attached,  and it reduces the amount of ceremony needed to attach/detach a child RIB. No Rx streams or listeners need to be unregistered/re-registered when attaching a child RIB this way.
+If communication is going up the RIB tree to a parent RIB’s Interactor, then the communication is done via a listener interface since the parent can outlive the child. The parent RIB, or some object on its DI graph, implements the listener interface and places it on its DI graph so that its children RIBs can invoke it. Using this pattern to pass data upwards instead of having parents directly subscribe to rx streams from their children has a few benefits. It prevents memory leaks, allows parents to be written, tested and maintained without knowledge of which children are attached, and reduces the amount of ceremony needed to attach/detach a child RIB. No Rx streams or listeners need to be unregistered/re-registered when attaching a child RIB this way.
 
 <p align="center">
 <img src="https://github.com/uber/ribs/blob/assets/documentation/listener.png" width="250" alt="RIBs"/><br/>
-Example of upwards communication with a listener interface. Lines denote RIB hierarchy.
+_Example of upwards communication with a listener interface. Lines denote RIB hierarchy._
 </p>
 
 
 ## RIB Tooling
-In order to ensure smooth adoption of the RIB architecture across four apps (per platform) we’ve invested in tooling to make (1) RIBs easier to use (2) take advantage of the invariants created by adopting RIBs. Some of this tooling has been open sourced and will be discussed in tutorials. The most interesting pieces of RIB related tooling that we’re open sourcing now, or in the future, are:
-* IDE plugins for creating new RIBs
-* Static analysis that prevents common RIB memory leaks
+In order to ensure smooth adoption of the RIB architecture across four apps (per platform), we have invested in tooling to make (1) RIBs easier to use (2) take advantage of the invariants created by adopting RIBs. Some of this tooling has been open sourced and will be discussed in tutorials. The RIB related tooling that we are open sourcing already are:
+* **Code generation:** IDE plugins for creating new RIBs and accompanying tests.
+  * [iOS code generation templates for Xcode](https://github.com/uber/RIBs/tree/master/ios/tooling)
+  * [Android code generation IDE plugin](https://github.com/uber/RIBs/tree/master/android/tooling/rib-intellij-plugin)
+* **NPE Static analysis (Android):** [NullAway](https://github.com/uber/NullAway) is a static analysis tool that makes NullPointerExceptions a thing of the past.
+* **Leak Static Analysis (Android):** Prevents the most common RIB memory leak.
+
+Tooling that we are planning to open source in the future are:
+* Static analysis that prevents a variety of RIB memory leaks
 * RIB integration with runtime leak detection
-* Code generation to make testing easier
+* (Android) Annotation processors for making testing easier
 * (Android) RxJava static analysis that ensures RIBs don’t mutate views off the main thread
-* (Android) NullAway, NPE static analysis that made NPEs a thing of the past for us
 
 
 ## Where to Go From Here
