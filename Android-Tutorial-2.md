@@ -254,7 +254,7 @@ Add a RootView to LoggedIn’s parent component.
 Note: Normally you should use dependency inversion when passing a parent view into a child like this. Ie, LoggedIn should declare an interface called LoggedInParentView. This makes the RIB more reusable and allows for builder optimizations by splitting the app into multiple modules. But we’re pressed for time.
 
 ```java
-public interface ParentComponent extends LoggedInOptionalExtension.ParentComponent {
+public interface ParentComponent {
   RootView rootView();
 }
 ```
