@@ -181,7 +181,7 @@ void detachLoggedOut() {
 }
 
 void attachLoggedIn() {
-  attachChild(loggedInBuilder.build(getView()));
+  attachChild(loggedInBuilder.build());
 }
 ```
 
