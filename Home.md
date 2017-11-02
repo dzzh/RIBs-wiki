@@ -47,7 +47,7 @@ Separating the class creation logic in the builder adds support for mockability 
 Presenters are stateless classes that translate business models into view models and vice versa. This type of class can be useful to facilitate testing view-model transformations. However, often this translation is so trivial that it doesn’t warrant the creation of a Presenter class. In this case you can omit the creation of a Presenter class. You do this by inlining the model translation into the view/view-controller or Interactor. Or doing the transformation implicitly.
 
 
-### View_(Controller)_
+### View(Controller)
 Views build and update the UI. This includes instantiating and laying out UI components, handling user interaction, filling UI components with data, and animations. Views are designed to be as “dumb” as possible. They just display information. In general, they do not contain any code that needs to be unit tested.
 
 
