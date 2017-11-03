@@ -88,7 +88,7 @@ In order to ensure smooth adoption of the RIB architecture across four apps (per
   * [iOS code generation templates for Xcode](https://github.com/uber/RIBs/tree/master/ios/tooling)
   * [Android code generation IDE plugin](https://github.com/uber/RIBs/tree/master/android/tooling/rib-intellij-plugin)
 * **NPE Static analysis (Android):** [NullAway](https://github.com/uber/NullAway) is a static analysis tool that makes NullPointerExceptions a thing of the past.
-* **Leak Static Analysis (Android):** Prevents the most common RIB memory leak.
+* **Autodispose Static Analysis (Android):** Prevents the most common RIB memory leak.
 
 Tooling that we are planning to open source in the future are:
 * Static analysis that prevents a variety of RIB memory leaks
