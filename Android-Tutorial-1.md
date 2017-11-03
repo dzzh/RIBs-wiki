@@ -131,7 +131,7 @@ RootInteractor should call getRouter().attachLoggedOut().
 ```
 
 Let’s try building and installing the app. *You’ll notice it crashes* because there is more work 
-to do (and because we don't have NullAway configured).
+to do (and because we don't have [NullAway](https://github.com/uber/NullAway) configured).
 
 ### Step 5
 Examine the error output in Android Studio’s Android Monitor. You’ll see a NPE inside RootBuilder.
