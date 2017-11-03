@@ -339,6 +339,6 @@ Some example ideas include:
 
 ## Tutorial complete
 
-Congratulations! You completed tutorial 3. The completed source for this tutorial can be found [here].(https://github.com/uber/RIBs/tree/master/android/tutorials/tutorial3-completed)
+Congratulations! You completed tutorial 3. The completed source for this tutorial can be found [here](https://github.com/uber/RIBs/tree/master/android/tutorials/tutorial3-rib-di-and-communication-finish-code).
 
 Now onwards to [tutorial 4](Android-Tutorial-4).
