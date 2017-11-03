@@ -106,7 +106,7 @@ Now that the name dependency is wired up, we can use the data in the LoggedIn RI
 
 Since the OffGame RIB is a child of the LoggedIn RIB, it can declare that it needs the player name dependencies in its ParentComponent:
 ```java
-public interface ParentComponent extends OffGameOptionalExtension.ParentComponent {
+public interface ParentComponent {
   @Named("player_one") String playerOne();
   @Named("player_two") String playerTwo();
   OffGameInteractor.Listener offGameListener();
