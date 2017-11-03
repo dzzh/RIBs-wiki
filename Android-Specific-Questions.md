@@ -4,7 +4,7 @@ High-level architectural principles are fine and dandy. How do RIBs cope with th
 RIB apps only have one activity in them. There is an implied RootActivity at the top of each diagrams that does nothing beyond calling attach(rootRouter).
 
 #### Question: What about when you need to break the single activity model in order to open a second activity that can not be ported to RIBs (perhaps 3rd party activity)? How do you handle the onActivityForResult()?
-Any RIB can start a second activity. When SecondActivity calls finishWithResult() the result is immediately delivered to the root of the FirstActivity. Since this data likely needs to be transmitted to the initiating RIB we use Workflows (see tutorial). This kills two birds with one stone (1) it gets the data from the top of RootActivity down to the RIB that started the request (2) the workflow causes the RIB hierarchy to be recreated in its original form in case the SecondActivity had been killed. This benefit of using this pattern is that the same code path gets executed regardless of whether MainActivity had been killed while waiting for SecondActivity to finishWithResult().
+Any RIB can start a second activity. When SecondActivity calls finishWithResult() the result is immediately delivered to the root of the FirstActivity. Since this data likely needs to be transmitted to the initiating RIB we use Workflows (see tutorial 4). This kills two birds with one stone: (1) it gets the data from the top of RootActivity down to the RIB that started the request (2) the workflow causes the RIB hierarchy to be recreated in its original form in case the SecondActivity had been killed. The benefit of using this pattern is that the same code path gets executed regardless of whether MainActivity had been killed while waiting for SecondActivity to finishWithResult().
 
 If the SecondActivity is first party, you could also create an AppScope that both activities can be injected from. However, creating long lived app scopes like this is problematic and discouraged.
 
@@ -15,7 +15,7 @@ Mostly orthogonal. RIB framework provides flexibility around how you communicate
 You could. RIBs do have first party support for savedInstanceState. However this is less important when working in a single activity app.
 
 #### Question: What about backstack?
-Each RIB chooses how it wants to handle the back stack or pass it onto children. This is flexible since different backstack strategies make sense for different apps.
+Each RIB chooses how it wants to handle the back stack or pass it onto children. This is flexible since different backstack strategies make sense for different apps. Nonetheless, there are utility classes open sourced alongside that encapsulate common strategies. See `RouterNavigator` and `ScreenStack` utilities.
 
 #### Question: What about screen rotation?
 You can handle saving view state in RIBs with savedInstanceState or custom data stores. Uber rarely supports rotation in order to increase engineering and design efficiency. Therefore there aren’t strongly held best practices around screen rotation yet.
