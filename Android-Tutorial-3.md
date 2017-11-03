@@ -248,13 +248,9 @@ Now that the score stream is wired up, we can subscribe to it in the OffGame RIB
 First we must add a dependency to the OffGame RIB’s parent component:
 ```java
 public interface ParentComponent {
-
   @Named("player_one") String playerOne();
-
   @Named("player_two") String playerTwo();
-
   OffGameInteractor.Listener listener();
-
   ScoreStream scoreStream();
 }
 ```
