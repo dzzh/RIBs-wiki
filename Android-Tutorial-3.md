@@ -237,7 +237,6 @@ Also worth noting, using @LoggedInScope ensures that the score stream is a singl
 
 Now that the mutable class is on the dependency graph, we can also add a provider for the immutable ScoreStream interface (which child RIBs are allowed to use) in the module in the LoggedInBuilder:
 ```java
-@LoggedInScope
 @Binds
 abstract ScoreStream scoreStream(@LoggedInInternal MutableScoreStream mutableScoreStream);
 ```
