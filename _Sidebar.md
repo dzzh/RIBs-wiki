@@ -2,7 +2,7 @@
 * [iOS Specific Questions](iOS-Specific-Questions)
 * [Android Specific Questions](Android-Specific-Questions)
 
-Once you've read through the documentation, learn the core concepts of RIBs by running through the tutorials.
+Once you've read through the documentation, learn the core concepts of RIBs by running through the tutorials and use RIBs more efficiently with the platform-specific tooling we've built.
 
 ###### Tutorial 1
 [iOS](iOS-Tutorial-1), [Android](Android-Tutorial-1)
@@ -17,5 +17,5 @@ Once you've read through the documentation, learn the core concepts of RIBs by r
 [iOS](iOS-Tutorial-4), [Android](Android-Tutorial-4)
 
 ###### Tooling
-[Android](Android-Tooling)
+[iOS](iOS-Tooling), [Android](Android-Tooling)
 
