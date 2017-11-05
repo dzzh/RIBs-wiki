@@ -1,9 +1,9 @@
 In order to ensure smooth adoption of the RIB architecture, we have built tooling to (1) make RIBs easier to use (2) take advantage by the invariants created by adopting RIBs. Tools we have open sourced are:
 
-- [RIB Code Generation Plugin for Android Studio and IntelliJ](#rib-code-generation-plugin-for-android-studio-and-intellij)
+- [RIBs Code Generation Plugin for Android Studio and IntelliJ](#ribs-code-generation-plugin-for-android-studio-and-intellij)
 - [NullAway: Fast Annotation-Based Null Checking for Java](#nullaway-fast-annotation-based-null-checking-for-java)
 
-# RIB Code Generation Plugin for Android Studio and IntelliJ
+# RIBs Code Generation Plugin for Android Studio and IntelliJ
 
 We have created an Android Studio / IntelliJ plugin to generate RIBs scaffolding, making RIB usage and adoption easier. The scaffolded classes have RIB structures in place. Test scaffolding for classes that should have business logic is also generated for use.
 
