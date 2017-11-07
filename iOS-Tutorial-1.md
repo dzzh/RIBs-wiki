@@ -48,7 +48,7 @@ Now we can delete the `DELETE_ME.swift` file. It was only temporarily needed so 
 
 ### LoggedOut UI
 
-Below is the UI we want to build. To save time, you can also use the provided UI code [here](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial1-create-a-rib/source/source1.swift?raw=true).
+Below is the UI we want to build. To save time, you can also use the provided UI code [here](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial1-create-a-rib/source/source1.swift?raw=true). Make sure to import SnapKit into LoggedOutViewController so that the project compiles.
 
 <img src="https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial1-create-a-rib/images/image1.jpg" width="200" />
 
