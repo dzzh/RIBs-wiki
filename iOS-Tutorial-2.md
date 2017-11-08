@@ -153,7 +153,8 @@ protocol RootViewControllable: ViewControllable {
 }
 ```
 
-Once we add the dismiss method to the protocol, we are then required by the compiler to provide an implementation in the `RootViewController`. Just add it under the `present` method. 
+Once we add the `dismiss` method to the protocol, we are then required by the compiler to provide an implementation in the `RootViewController`. Just add it under the `present` method. 
+
 ```swift
 func dismiss(viewController: ViewControllable) {
     if presentedViewController === viewController.uiviewController {
@@ -162,17 +163,15 @@ func dismiss(viewController: ViewControllable) {
 }
 ```
 
-Then we can go back to RootRouter routeToLoggedIn method and build the LoggedInRouter.
+Going back to the `RootRouter`'s `routeToLoggedIn`, it can now correctly dismiss the loggedOut RIB. The last two lines of the `routeToLoggedIn` method build the LoggedInRouter, and attach it as a child. Routers always attach the routers of their children.
 
-And finally attach the LoggedInRouter.
+Notice we don't need to call a `RootViewControllable` to show the LoggedIn RIB, as the `LoggedIn` RIB doesn't have a view. If you want to see what presenting a RIB with a view looks like, check out the `routeToLoggedOut` method.
 
-Notice we don't need to call our RootViewControllable to show the LoggedIn RIB, since LoggedIn RIB is view-less. We do need to show the LoggedOut in the routeToLoggedOut method.
+## Unit testing the RootRouter
 
-## Unit test RootRouter
+Now that the Root RIB is complete, let’s unit test its router. The same process can be applied to unit test other parts of a RIB.
 
-Now that Root is complete, let’s unit test its router. The same process can be applied to unit test other parts of a RIB.
-
-Create a swift file in TicTacToeTests/Root and call it RootRouterTests and put it in the TicTacToeTest test bundle.
+Create a swift file in the TicTacToeTests/Root group and call it RootRouterTests. Add it to the TicTacToeTest bundle.
 
 Let’s write a test that verifies when we invoke routeToLoggedIn, the RootRouter invokes the LoggedInBuildable protocol and attaches the returned Router. Feel free to refer to the written test: [RootRouterTests.swift](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial2-composing-ribs/source/source3.swift?raw=true).
 
