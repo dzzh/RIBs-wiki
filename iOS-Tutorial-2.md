@@ -78,7 +78,7 @@ This will make the Root RIB route to the LoggedIn RIB whenever the LoggedOut RIB
 
 Next, create a LoggedIn RIB using Xcode templates as a viewless RIB. Uncheck the "Owns corresponding view" box create the RIB in the LoggedIn group. There are already some files in that group, but don't worry about them. Also make sure that the newly created files are added to the TicTacToe target.
 
-Pass LoggedInBuildable protocol into RootRouter via constructor injection.
+The RootRouter now needs to be able to build the newly created LoggedIn RIB. We make this possible by passing in the LoggedInBuildable protocol into the RootRouter (in the RootRouter.swift file) via constructor injection. Modify the constructor of the RootRouter to look like this:
 
 ```swift
 init(interactor: RootInteractable,
@@ -92,7 +92,18 @@ init(interactor: RootInteractable,
 }
 ```
 
-Update the RootBuilder to instantiate LoggedInBuilder concrete class and inject into RootRouter. 
+You'll also need to add a private loggedInBuilder instance constant for the RootRouter:
+
+```swift
+    // MARK: - Private
+
+    private let loggedInBuilder: LoggedInBuildable
+
+    ...
+```
+
+Then, update the RootBuilder to instantiate a LoggedInBuilder concrete class and inject it into the RootRouter. Modify the build function of the RootBuilder (yes, in the RootBuilder.swift file) like so:
+
 ```swift
 func build() -> LaunchRouting {
     let viewController = RootViewController()
@@ -108,12 +119,16 @@ func build() -> LaunchRouting {
                       loggedInBuilder: loggedInBuilder)
 }
 ```
-For now just pass RootComponent as the dependency for LoggedInBuilder. We'll cover what this means in [tutorial3](../tutorial3-rib-di-and-communication).
 
-RootRouter only uses and depends on LoggedInBuildable, instead of the concrete LoggedInBuilder class. This allows us to mock the LoggedInBuildable when unit testing RootRouter. This is a constraint by Swift, where swizzling based mocking is not possible. At the same time, this also follows the protocol-based programming principle, ensuring RootRouter and LoggedInBuilder are not tightly coupled.
+If you look at the code we just modified, we pass in RootComponent as the dependency for the LoggedInBuilder using constructor injection. Don't worry about why we do this rignt now, we'll this when we get to [tutorial 3](../tutorial3).
 
-Implement the routeToLoggedIn method in RootRouter. 
+`RootRouter` depends on `LoggedInBuildable`, instead of the concrete `LoggedInBuilder` class. This allows us to pass in a test mock for the `LoggedInBuildable` when unit testing the `RootRouter`. This is a constraint of Swift, where swizzling based mocking is not possible. At the same time, this also follows the protocol-based programming principle, ensuring RootRouter and LoggedInBuilder are not tightly coupled.
+
+Now, lets implement the `routeToLoggedIn` method in the `RootRouter` (by now I'm sure you already know what file `RootRouter` is implemented in). A good place to add it is just before the `// MARK: - Private` section.
+ 
 ```swift
+// MARK: - RootRouting
+
 func routeToLoggedIn(withPlayer1Name player1Name: String, player2Name: String) {
     // Detach logged out.
     if let loggedOut = self.loggedOut {
@@ -127,7 +142,10 @@ func routeToLoggedIn(withPlayer1Name player1Name: String, player2Name: String) {
 }
 ```
 
-We need to first detach the LoggedOutRouter and dismiss its view. This means we need to add a new method in RootViewControllable, which is the protocol for  our current scope, Root. 
+When routing to the LoggedIn RIB, we first detach the `LoggedOutRouter` and dismiss its view. In order to be able to do so, we need to add a new method in the `RootViewControllable` protocol.
+
+Modify the protocol look like this:
+
 ```swift
 protocol RootViewControllable: ViewControllable {
     func present(viewController: ViewControllable)
@@ -135,7 +153,7 @@ protocol RootViewControllable: ViewControllable {
 }
 ```
 
-Once we add the dismiss method. We are then required to provide an implementation in RootViewController. 
+Once we add the dismiss method to the protocol, we are then required by the compiler to provide an implementation in the `RootViewController`. Just add it under the `present` method. 
 ```swift
 func dismiss(viewController: ViewControllable) {
     if presentedViewController === viewController.uiviewController {
@@ -143,6 +161,7 @@ func dismiss(viewController: ViewControllable) {
     }
 }
 ```
+
 Then we can go back to RootRouter routeToLoggedIn method and build the LoggedInRouter.
 
 And finally attach the LoggedInRouter.
