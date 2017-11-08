@@ -169,9 +169,10 @@ Notice we don't need to call a `RootViewControllable` to show the LoggedIn RIB, 
 
 ## Pass in LoggedInViewControllable instead of creating it
 
-Because LoggedIn RIB does not own its own view, yet it still needs to be able to show child RIBs views, we need one of its ancestors, in this case the parent Root RIB to provide the view.
+Since the LoggedIn RIB does not own its own view and yet still needs to be able to show the views of it's child RIBs, the LoggedIn RIB needs to use the view of its ancestor. In our case, the parent Root RIB to provide the view.
 
-Update RootViewController to conform to LoggedInViewControllable. 
+Update `RootViewController` to conform to `LoggedInViewControllable`, by adding the following snippet to the end of the implementation:
+
 ```swift
 // MARK: LoggedInViewControllable
 
@@ -180,9 +181,9 @@ extension RootViewController: LoggedInViewControllable {
 }
 ```
 
-Dependency inject the LoggedInViewControllable protocol. Don't worry about what this means or how it's done for now. This is the focus area for [tutorial3](../tutorial3-rib-di-and-communication). We'll revisit this portion in that tutorial. For now, override LoggedInBuilder.swift with [this code](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial2-composing-ribs/source/source1.swift?raw=true).
+Now we need to dependency inject the LoggedInViewControllable protocol. We'll not walk you throught this right now, as this is the focus area for [tutorial3](../tutorial3-rib-di-and-communication). For now, just override the content of LoggedInBuilder.swift with [this code](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial2-composing-ribs/source/source1.swift?raw=true).
 
-Now LoggedIn RIB can show/hide its child RIBs views by invoking methods on LoggedInViewControllable.
+Now the LoggedIn RIB can show and hide its child RIBs views by invoking methods on the `LoggedInViewControllable`.
 
 ## Attach OffGame RIB on LoggedIn didLoad
 
