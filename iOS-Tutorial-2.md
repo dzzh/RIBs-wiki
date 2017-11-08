@@ -29,6 +29,8 @@ protocol LoggedOutListener: class {
 }
 ```
 
+This forces the any parent RIB of the LoggedOut RIB to implement the `didLogin` function and makes sure that the compiler enforces the contract between the parent and its children.
+
 Add a login method implementation to the `LoggedOutInteractor` and have it perform the business logic of handling nil player names, as well as calling to LoggedOutListener to inform its parent (the Root RIB in our project) that the players have login. 
 ```swift
 // MARK: - LoggedOutPresentableListener
@@ -49,26 +51,35 @@ private func playerName(_ name: String?, withDefaultName defaultName: String) ->
 }
 ```
 
-## Attaching view-less LoggedIn RIB and detach LoggedOut RIB on button tap
+## Attaching a viewless LoggedIn RIB and detach LoggedOut RIB when users sign in
 
-Delete DELETE\_ME.swift, it was only required to stub out classes you're about to implement.
+Delete DELETE\_ME.swift (in the LoggedIn group), it was only required to stub out classes you're about to implement.
 
-Update RootRouting in RootInteractor.swift to add a method to route to LoggedIn RIB.
+Update `RootRouting` in RootInteractor.swift to add a method to route to LoggedIn RIB.
 ```swift
 protocol RootRouting: ViewableRouting {
     func routeToLoggedIn(withPlayer1Name player1Name: String, player2Name: String)
 }
 ```
 
-Invoke RootRouting in RootInteractor to route to LoggedIn, as the LoggedOutListener implementation. 
+This establishes the contract between the `RootInteractor` and its router, the `RootRouter`.
+
+Invoke `RootRouting` in `RootInteractor` to route to the LoggedIn RIB, by implementing the `LoggedOutListener` protocol.
+ 
 ```swift
+// MARK: - LoggedOutListener
+
 func didLogin(withPlayer1Name player1Name: String, player2Name: String) {
     router?.routeToLoggedIn(withPlayer1Name: player1Name, player2Name: player2Name)
 }
 ```
-Create LoggedIn RIB using Xcode templates as a view-less RIB. Uncheck the "Owns corresponding view" box.
+
+This will make the Root RIB route to the LoggedIn RIB whenever the LoggedOut RIB says that users have logged in.
+
+Next, create a LoggedIn RIB using Xcode templates as a viewless RIB. Uncheck the "Owns corresponding view" box create the RIB in the LoggedIn group. There are already some files in that group, but don't worry about them. Also make sure that the newly created files are added to the TicTacToe target.
 
 Pass LoggedInBuildable protocol into RootRouter via constructor injection.
+
 ```swift
 init(interactor: RootInteractable,
      viewController: RootViewControllable,
