@@ -171,7 +171,7 @@ Notice we don't need to call a `RootViewControllable` to show the LoggedIn RIB, 
 
 Since the LoggedIn RIB does not own its own view and yet still needs to be able to show the views of it's child RIBs, the LoggedIn RIB needs to use the view of its ancestor. In our case, the parent Root RIB to provide the view.
 
-Update `RootViewController` to conform to `LoggedInViewControllable`, by adding the following snippet to the end of the implementation:
+Update `RootViewController` to conform to `LoggedInViewControllable`, by adding the following snippet to the end of the file:
 
 ```swift
 // MARK: LoggedInViewControllable
@@ -185,11 +185,16 @@ Now we need to dependency inject the LoggedInViewControllable protocol. We'll no
 
 Now the LoggedIn RIB can show and hide its child RIBs views by invoking methods on the `LoggedInViewControllable`.
 
-## Attach OffGame RIB on LoggedIn didLoad
+## Attaching the OffGame RIB when the LoggedIn RIB loads
 
-Create an OffGame RIB that displays a "Start Game" button. This is the same as creating the LoggedOut RIB in the [previous tutorial](../tutorial1-create-a-rib). Feel free to use the provided [OffGameViewController](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial2-composing-ribs/source/source2.swift?raw=true) implementation to save time. Use the Xcode RIB template to create a RIB that owns its own view. Then paste in the provided [OffGameViewController](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial2-composing-ribs/source/source2.swift?raw=true).
+Create a new RIB called OffGame, which is supposed to display a "Start Game" button. This is our splash screen for the game that is displayed when we haven't started the game yet. 
 
-Pass in the OffGameBuildable protocol into LoggedInRouter via constructor injection. This is the same as how we just passed LoggedInBuildable into RootRouter. 
+Follow the same instructions as in our [previous tutorial](../tutorial1) to create a RIB with a view. We'd suggest creating a new group for it called "OffGame".
+
+ONce you've cvreated the RIB, implement the UI. Feel free to use the provided [OffGameViewController](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial2-composing-ribs/source/source2.swift?raw=true) implementation to save time.
+
+Then, we'll pass in the `OffGameBuildable` protocol into LoggedInRouter via constructor injection. This is the same as how we just passed LoggedInBuildable into RootRouter. 
+
 ```swift
 init(interactor: LoggedInInteractable,
      viewController: LoggedInViewControllable,
