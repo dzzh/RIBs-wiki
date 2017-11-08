@@ -10,24 +10,26 @@ For this tutorial, we'll start off where [tutorial 1](iOS-Tutorial-1) ended. You
 
 The main goals of this exercise to understand the following concepts:
 
-- Child RIB calling up to parent RIB.
-- Attaching/detaching a child RIB when the parent decides so.
+- Having a child RIB calling up to its parent RIB.
+- Attaching/detaching a child RIB when the parent interactor decides to do so.
 - Creating a view-less RIB.
-  - Cleanup view modifications when view-less RIB is detached.
+  - Cleaning up view modifications when a viewless RIB is detached.
 - Attaching a child RIB when the parent RIB first loads up.
-  - Lifecycle of a RIB.
-- Unit testing.
+  - Understanding the lifecycle of a RIB.
+- Unit testing a RIB.
 
-## Inform Root RIB from LoggedOut RIB that the players have logged in
+## Calling up to a parent RIB
 
-Update LoggedOutListener to add a method that allows LoggedOut RIB to inform Root RIB that players did login.
+We want to inform the Root RIB from LoggedOut RIB when the players have logged in. For this we need to implement the following code.
+
+First, update the `LoggedOutListener` (in the LoggedOutInteractor.swift file) to add a method that allows LoggedOut RIB to inform Root RIB that players has logged in.
 ```swift
 protocol LoggedOutListener: class {
     func didLogin(withPlayer1Name player1Name: String, player2Name: String)
 }
 ```
 
-Update LoggedOutInteractor's implementation of login method to perform the business logic of handling nil player names, as well as calling to LoggedOutListener to inform Root RIB that players did login. 
+Add a login method implementation to the `LoggedOutInteractor` and have it perform the business logic of handling nil player names, as well as calling to LoggedOutListener to inform its parent (the Root RIB in our project) that the players have login. 
 ```swift
 // MARK: - LoggedOutPresentableListener
 
@@ -47,7 +49,7 @@ private func playerName(_ name: String?, withDefaultName defaultName: String) ->
 }
 ```
 
-## Attach view-less LoggedIn RIB and detach LoggedOut RIB on button tap
+## Attaching view-less LoggedIn RIB and detach LoggedOut RIB on button tap
 
 Delete DELETE\_ME.swift, it was only required to stub out classes you're about to implement.
 
