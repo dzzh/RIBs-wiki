@@ -167,14 +167,6 @@ Going back to the `RootRouter`'s `routeToLoggedIn`, it can now correctly dismiss
 
 Notice we don't need to call a `RootViewControllable` to show the LoggedIn RIB, as the `LoggedIn` RIB doesn't have a view. If you want to see what presenting a RIB with a view looks like, check out the `routeToLoggedOut` method.
 
-## Unit testing the RootRouter
-
-Now that the Root RIB is complete, let’s unit test its router. The same process can be applied to unit test other parts of a RIB.
-
-Create a swift file in the TicTacToeTests/Root group and call it RootRouterTests. Add it to the TicTacToeTest bundle.
-
-Let’s write a test that verifies when we invoke routeToLoggedIn, the RootRouter invokes the LoggedInBuildable protocol and attaches the returned Router. Feel free to refer to the written test: [RootRouterTests.swift](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial2-composing-ribs/source/source3.swift?raw=true).
-
 ## Pass in LoggedInViewControllable instead of creating it
 
 Because LoggedIn RIB does not own its own view, yet it still needs to be able to show child RIBs views, we need one of its ancestors, in this case the parent Root RIB to provide the view.
@@ -308,6 +300,15 @@ private func detachCurrentChild() {
     }
 }
 ```
+
+## Unit testing
+
+Finally, let's write some test for our app. Let's unit test our `RootRouter` The same principles can be applied to unit testing other parts of a RIB, and there's even a tooling template that will create all the unit tests for a RIB for you.
+
+Create a swift file in the TicTacToeTests/Root group and call it RootRouterTests. Add it to the TicTacToeTest bundle.
+
+Let’s write a test that verifies when we invoke `routeToLoggedIn`, the `RootRouter` invokes the `LoggedInBuildable` protocol and attaches the returned Router. Feel free to refer to the written test: [RootRouterTests.swift](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial2-composing-ribs/source/source3.swift?raw=true).
+
 
 ## Tutorial completed
 You completed the second tutorial Now onwards to [tutorial 3](iOS-Tutorial-3).
