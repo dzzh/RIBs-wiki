@@ -50,7 +50,7 @@ We just generated all the classes for a the LoggedOut RIB.
 
 ### LoggedOut UI
 
-Below is the UI we want to build, so we'll need to modify the LoggedOutViewController. To save time, you can also use the provided UI code [here](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial1-create-a-rib/source/source1.swift?raw=true). 
+Below is the UI we want to build, so we'll need to modify the LoggedOutViewController. To save time, you can also use [our code](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial1-create-a-rib/source/source1.swift?raw=true) and add it to the LoggedInViewController implementation. 
 
 Make sure to `import SnapKit` in the LoggedOutViewController if you're using the provided example code so that the project compiles.
 
@@ -61,15 +61,15 @@ Make sure to `import SnapKit` in the LoggedOutViewController if you're using the
 
 LoggedOutViewController calls to its listener, LoggedOutPresentableListener, to perform the business logic of login, passing in the names of player 1 and 2.
 
+Modify the `LoggedOutPresentableListener` protocol in the LoggedOutViewController.swift file to be the following:
+
 ```swift
 protocol LoggedOutPresentableListener: class {
     func login(withPlayer1Name player1Name: String?, player2Name: String?)
 }
 ```
 
-Notice that both player names are optional, since the user may not have entered anything. We could disable the Login button until both names are entered, but for this exercise, we’ll let the LoggedOutInteractor deal with the business logic of handling nil names.
-
-If player names are empty, we'll want to default them to "Player 1" and "Player 2".
+Notice that both player names are optional, since the user may not entered anything for the player names. We could disable the Login button until both names are entered, but for this exercise, we’ll let the LoggedOutInteractor deal with the business logic of handling nil names. If player names are empty, we'll want to default them to "Player 1" and "Player 2".
 
 ## Tutorial complete
 Congratulations! You just created your first RIB. Now onwards to [tutorial 2](iOS-Tutorial-2).
