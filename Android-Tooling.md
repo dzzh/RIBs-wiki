@@ -2,6 +2,8 @@ In order to ensure smooth adoption of the RIB architecture, we have built toolin
 
 - [RIBs Code Generation Plugin for Android Studio and IntelliJ](#ribs-code-generation-plugin-for-android-studio-and-intellij)
 - [NullAway: Fast Annotation-Based Null Checking for Java](#nullaway-fast-annotation-based-null-checking-for-java)
+- [AutoDispose Error Prone Checker](#autodispose-error-prone-checker)
+
 
 # RIBs Code Generation Plugin for Android Studio and IntelliJ
 
@@ -33,3 +35,13 @@ To install the plugin locally:
 NullAway is the tool we built to help eliminate `NullPointerExceptions` (NPEs) in Java code. We use this tool on top of our RIBs stack for static analysis.
 
 The project is open sourced on its own. You can read more about it and download it on the [NullAway Github page](https://github.com/uber/NullAway).
+
+# AutoDispose Error Prone Checker
+
+You can configure the [RIB AutoDispose checker](https://github.com/uber/RIBs/tree/master/android/tooling/autodispose-error-prone-checker) similarly to usage of NullAway. Once applied to your project you can't build your app when you forget to apply `AutoDispose` to an rx subscription inside a RIB. If you do forget you'll see an error like the following
+
+```
+error: [RxJavaMissingAutodisposeErrorChecker] Always apply an Autodispose scope before subscribing
+        .subscribe(new Consumer<String>() {
+                  ^
+```
