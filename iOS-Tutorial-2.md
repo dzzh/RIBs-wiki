@@ -205,7 +205,15 @@ init(interactor: LoggedInInteractable,
 }
 ```
 
-Update the LoggedInBuilder to instantiate OffGameBuilder concrete class and inject into LoggedInRouter. This is the same as how we just instantiated LoggedInBuilder. 
+We'll also have to declare a new private constant to hold the offHamBuilder:
+```swift
+// MARK: - Private
+    
+private let offGameBuilder: OffGameBuildable
+```
+
+Then we'll update the `LoggedInBuilder` to instantiate a `OffGameBuilder` concrete class and inject it into the `LoggedInRouter` instance. Modify the build function like so:
+
 ```swift
 func build(withListener listener: LoggedInListener) -> LoggedInRouting {
     let component = LoggedInComponent(dependency: dependency)
@@ -219,10 +227,11 @@ func build(withListener listener: LoggedInListener) -> LoggedInRouting {
 }
 ```
 
-For now just pass RootComponent as the dependency for LoggedInBuilder. We'll cover what this means in the [tutorial3](../tutorial3-rib-di-and-communication).
+Then, we'll implement a `attachOffGame` private method in the `LoggedInRouter`class to build and attach the OffGame RIB and present its view controller. Add the following to the end of your class implementation.
 
-Implement attachOffGame method in LoggedInRouter to build and attach OffGame RIB and present its view controller. 
 ```swift
+// MARK: - Private
+
 private var currentChild: ViewableRouting?
 
 private func attachOffGame() {
@@ -233,7 +242,8 @@ private func attachOffGame() {
 }
 ```
 
-Invoke attachOffGame in didLoad method of LoggedInRouter. 
+Then we'll invoke the `attachOffGame` method whenever the `LoggedInRouter` loads. We'll do this by overriding the  `didLoad` method of the Router. Add the following code somewhere above your private implementations in the `LoggedInRouter` class.
+
 ```swift
 override func didLoad() {
     super.didLoad()
@@ -241,20 +251,23 @@ override func didLoad() {
 }
 ```
 
-## Cleanup LoggedIn attached views when LoggedIn is detached
+## Cleaning up attached views when the LoggedIn RIB is detached
 
-Because LoggedIn RIB doesn't own its own view, but rather uses a protocol to modify the view hierarchy one of its ancestors, in this case Root, provided, when Root detaches LoggedIn, Root has no way to directly remove the view modifications LoggedIn may have performed. Fortunately, the Xcode templates we used to generate the view-less LoggedIn RIB already provides a hook for us to clean up the view modifications when LoggedIn is detached/deactivated.
+Because the LoggedIn RIB doesn't own its own view, but rather uses a protocol to modify the view hierarchy one of its parents, the Root RIB has no way to automatically remove the view modifications the LoggedIn RIB may have performed. Fortunately, the Xcode templates we used to generate the viewless LoggedIn RIB already provides a hook for us to clean up the view modifications when LoggedIn is detached.
 
-Add a dismiss method to the LoggedInViewControllable protocol. 
+Add a present and dismiss method declaration to the LoggedInViewControllable protocol:
+
 ```swift
 protocol LoggedInViewControllable: ViewControllable {
     func present(viewController: ViewControllable)
     func dismiss(viewController: ViewControllable)
 }
 ```
+
 Similar to other protocol declarations, this declares that LoggedIn RIB **needs** the functionality of dismissing a ViewControllable.
 
-Dismiss the currentChild's view controller in cleanupViews method. 
+Then we'll update the cleanupViews method of the `LoggedInRouter` to dismiss the views the currentChild's view controller:
+
 ```swift
 func cleanupViews() {
     if let currentChild = currentChild {
@@ -263,9 +276,9 @@ func cleanupViews() {
 }
 ```
 
-This method is invoked from the LoggedInInteractor when it resigns active.
+This method is invoked from the `LoggedInInteractor` when it resigns its active state.
 
-## Attach TicTacToe RIB and detach OffGame RIB on button tap
+## Attaching the TicTacToe RIB and detach the OffGame RIB on button tap
 
 This step is very similar to attaching LoggedIn RIB and detaching LoggedOut RIB when the "Login" button it tapped. To save time, the TicTacToe RIB is provided already. In order to route to TicTacToe, we should implement routeToTicTacToe in LoggedInRouter and wire up the button tap event from OffGameViewController to OffGameInteractor and then finally to LoggedInInteractor.
 
