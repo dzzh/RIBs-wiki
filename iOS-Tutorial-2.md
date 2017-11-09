@@ -199,16 +199,19 @@ Then, we'll change the constructor of the `LoggedInRouter` to declare a dependen
 init(interactor: LoggedInInteractable,
      viewController: LoggedInViewControllable,
      offGameBuilder: OffGameBuildable) {
+    self.viewController = viewController
     self.offGameBuilder = offGameBuilder
-    super.init(interactor: interactor, viewController: viewController)
+    super.init(interactor: interactor)
     interactor.router = self
 }
 ```
 
-We'll also have to declare a new private constant to hold the offGameBuilder:
+We'll also have to declare a two new private constant to hold the viewController and offGameBuilder:
 ```swift
 // MARK: - Private
-    
+
+private let viewController: LoggedInViewControllable
+
 private let offGameBuilder: OffGameBuildable
 ```
 
