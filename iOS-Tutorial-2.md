@@ -230,6 +230,17 @@ func build(withListener listener: LoggedInListener) -> LoggedInRouting {
 }
 ```
 
+To fulfill the dependency contract of the OffGameBuilder, we'll modify the `LoggedInComponent` class to conform to `OffGameComponent` (don't worry what this means, we'll cover it in [tutorial 3](../tutorial3):
+
+```swift
+final class LoggedInComponent: Component<LoggedInDependency>, OffGameDependency {
+    
+    fileprivate var loggedInViewController: LoggedInViewControllable {
+        return dependency.loggedInViewController
+    }
+}
+```
+
 Then, we'll implement a `attachOffGame` private method in the `LoggedInRouter`class to build and attach the OffGame RIB and present its view controller. Add the following to the end of your class implementation.
 
 ```swift
