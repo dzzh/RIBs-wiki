@@ -59,7 +59,7 @@ Make sure to `import SnapKit` in the LoggedOutViewController if you're using the
 
 ### Login Logic
 
-LoggedOutViewController calls to its listener, LoggedOutPresentableListener, to perform the business logic of login, passing in the names of player 1 and 2.
+The `LoggedOutViewController` calls to its listener, `LoggedOutPresentableListener`, to perform the business logic of login, passing in the names of player 1 and 2.
 
 Modify the `LoggedOutPresentableListener` protocol in the LoggedOutViewController.swift file to be the following:
 
