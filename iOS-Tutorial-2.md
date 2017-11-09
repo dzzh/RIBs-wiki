@@ -191,9 +191,9 @@ Create a new RIB called OffGame, which is supposed to display a "Start Game" but
 
 Follow the same instructions as in our [previous tutorial](../tutorial1) to create a RIB with a view. We'd suggest creating a new group for it called "OffGame".
 
-ONce you've cvreated the RIB, implement the UI. Feel free to use the provided [OffGameViewController](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial2-composing-ribs/source/source2.swift?raw=true) implementation to save time.
+Once you've created the RIB, implement the UI. Feel free to use the provided [OffGameViewController](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial2-composing-ribs/source/source2.swift?raw=true) implementation to save time.
 
-Then, we'll pass in the `OffGameBuildable` protocol into LoggedInRouter via constructor injection. This is the same as how we just passed LoggedInBuildable into RootRouter. 
+Then, we'll change the constructor of the `LoggedInRouter` to declare a dependency on a `OffGameBuildable` instance. Let's modify the constructor like so: 
 
 ```swift
 init(interactor: LoggedInInteractable,
