@@ -56,6 +56,7 @@ private func playerName(_ name: String?, withDefaultName defaultName: String) ->
 Delete DELETE\_ME.swift (in the LoggedIn group), it was only required to stub out classes you're about to implement.
 
 Update `RootRouting` in RootInteractor.swift to add a method to route to LoggedIn RIB.
+
 ```swift
 protocol RootRouting: ViewableRouting {
     func routeToLoggedIn(withPlayer1Name player1Name: String, player2Name: String)
@@ -92,7 +93,7 @@ init(interactor: RootInteractable,
 }
 ```
 
-You'll also need to add a private loggedInBuilder instance constant for the RootRouter:
+You'll also need to add a private `loggedInBuilder` constant for the `RootRouter`:
 
 ```swift
     // MARK: - Private
@@ -102,7 +103,7 @@ You'll also need to add a private loggedInBuilder instance constant for the Root
     ...
 ```
 
-Then, update the RootBuilder to instantiate a LoggedInBuilder concrete class and inject it into the RootRouter. Modify the build function of the RootBuilder (yes, in the RootBuilder.swift file) like so:
+Then, update the `RootBuilder` to instantiate a `LoggedInBuilder` concrete class and inject it into the `RootRouter`. Modify the build function of the `RootBuilder` (yes, in the RootBuilder.swift file) like so:
 
 ```swift
 func build() -> LaunchRouting {
@@ -120,9 +121,9 @@ func build() -> LaunchRouting {
 }
 ```
 
-If you look at the code we just modified, we pass in RootComponent as the dependency for the LoggedInBuilder using constructor injection. Don't worry about why we do this rignt now, we'll this when we get to [tutorial 3](../tutorial3).
+If you look at the code we just modified, we pass in `RootComponent` as the dependency for the `LoggedInBuilder` using constructor injection. Don't worry about why we do this right now, we'll cover this when we get to [tutorial 3](../tutorial3).
 
-`RootRouter` depends on `LoggedInBuildable`, instead of the concrete `LoggedInBuilder` class. This allows us to pass in a test mock for the `LoggedInBuildable` when unit testing the `RootRouter`. This is a constraint of Swift, where swizzling based mocking is not possible. At the same time, this also follows the protocol-based programming principle, ensuring RootRouter and LoggedInBuilder are not tightly coupled.
+`RootRouter` depends on `LoggedInBuildable`, instead of the concrete `LoggedInBuilder` class. This allows us to pass in a test mock for the `LoggedInBuildable` when unit testing the `RootRouter`. This is a constraint of Swift, where swizzling based mocking is not possible. At the same time, this also follows the protocol-based programming principle, ensuring `RootRouter` and `LoggedInBuilder` are not tightly coupled.
 
 Now, lets implement the `routeToLoggedIn` method in the `RootRouter` (by now I'm sure you already know what file `RootRouter` is implemented in). A good place to add it is just before the `// MARK: - Private` section.
  
@@ -142,7 +143,7 @@ func routeToLoggedIn(withPlayer1Name player1Name: String, player2Name: String) {
 }
 ```
 
-RIBs is unforgivable when it comes to conforming to listener interfaces as they are protocol based. We're using protocols instead of some other implicit listeners, so that the compiler will give you errors when some parent isn't consuming all the events of its children instead of failing at runtime. Now that we pass the `RootInteractable` as a listener to the `LoggedInBuilder`'s `build` method, the `RootInteractable` needs to conform to the `LoggedInListener` protocol. Let's add this conformance to the `RootInteractable`:
+RIBs is unforgiving when it comes to conforming to listener interfaces as they are protocol based. We're using protocols instead of some other implicit observation methods, so that the compiler will give you errors when any parent isn't consuming all the events of its children instead of failing silently at runtime. Now that we pass the `RootInteractable` as a listener to the `LoggedInBuilder`'s `build` method, the `RootInteractable` needs to conform to the `LoggedInListener` protocol. Let's add this conformance to the `RootInteractable`:
 
 ```swift
 protocol RootInteractable: Interactable, LoggedOutListener, LoggedInListener {
@@ -172,7 +173,7 @@ func dismiss(viewController: ViewControllable) {
 }
 ```
 
-Going back to the `RootRouter`'s `routeToLoggedIn`, it can now correctly dismiss the loggedOut RIB. The last two lines of the `routeToLoggedIn` method build the LoggedInRouter, and attach it as a child. Routers always attach the routers of their children.
+Going back to the `RootRouter`'s `routeToLoggedIn`, it can now correctly dismiss the loggedOut RIB. The last two lines of the `routeToLoggedIn` method build the `LoggedInRouter`, and attach it as a child. Routers always attach the routers of their children.
 
 Notice we don't need to call a `RootViewControllable` to show the LoggedIn RIB, as the `LoggedIn` RIB doesn't have a view. If you want to see what presenting a RIB with a view looks like, check out the `routeToLoggedOut` method.
 
@@ -186,21 +187,20 @@ Update `RootViewController` to conform to `LoggedInViewControllable`, by adding 
 // MARK: LoggedInViewControllable
 
 extension RootViewController: LoggedInViewControllable {
-
 }
 ```
 
-Now we need to dependency inject the LoggedInViewControllable protocol. We'll not walk you throught this right now, as this is the focus area for [tutorial3](../tutorial3-rib-di-and-communication). For now, just override the content of LoggedInBuilder.swift with [this code](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial2-composing-ribs/source/source1.swift?raw=true).
+Now we need to dependency inject the a `LoggedInViewControllable` conforming instance. We'll not walk you through this right now, as this is the focus area for [tutorial3](../tutorial3-rib-di-and-communication). For now, just override the content of LoggedInBuilder.swift with [this code](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial2-composing-ribs/source/source1.swift?raw=true).
 
 Now the LoggedIn RIB can show and hide its child RIBs views by invoking methods on the `LoggedInViewControllable`.
 
 ## Attaching the OffGame RIB when the LoggedIn RIB loads
 
-Create a new RIB called OffGame, which is supposed to display a "Start Game" button. This is our splash screen for the game that is displayed when we haven't started the game yet. 
+Let's create a new RIB called OffGame, which is supposed to display a "Start Game" button. This is our splash screen for the game that is displayed when we haven't started the game yet. 
 
 Follow the same instructions as in our [previous tutorial](../tutorial1) to create a RIB with a view. We'd suggest creating a new group for it called "OffGame".
 
-Once you've created the RIB, implement the UI. Feel free to use the provided [OffGameViewController](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial2-composing-ribs/source/source2.swift?raw=true) implementation to save time.
+Once you've created the RIB, implement its UI. Feel free to use the provided [OffGameViewController](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial2-composing-ribs/source/source2.swift?raw=true) implementation to save time.
 
 Then, we'll change the constructor of the `LoggedInRouter` to declare a dependency on a `OffGameBuildable` instance. Let's modify the constructor like so: 
 
@@ -215,7 +215,7 @@ init(interactor: LoggedInInteractable,
 }
 ```
 
-We'll also have to declare a two new private constant to hold the viewController and offGameBuilder:
+We'll also have to declare two new private constant to hold the viewController and offGameBuilder:
 ```swift
 // MARK: - Private
 
@@ -371,5 +371,7 @@ Let’s write a test that verifies when we invoke `routeToLoggedIn`, the `RootRo
 
 
 ## Tutorial completed
-You completed the second tutorial Now onwards to [tutorial 3](iOS-Tutorial-3).
+If you didn't make any mistakes, you should have a project that builds and works. There's also the possibility that we messed up this tutorial, in which case, please open a issue for us.
+
+You completed the second tutorial. Now onwards to [tutorial 3](iOS-Tutorial-3).
 
