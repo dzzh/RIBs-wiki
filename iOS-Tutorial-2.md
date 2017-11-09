@@ -142,6 +142,15 @@ func routeToLoggedIn(withPlayer1Name player1Name: String, player2Name: String) {
 }
 ```
 
+RIBs is unforgivable when it comes to conforming to listener interfaces as they are protocol based. We're using protocols instead of some other implicit listeners, so that the compiler will give you errors when some parent isn't consuming all the events of its children instead of failing at runtime. Now that we pass the `RootInteractable` as a listener to the `LoggedInBuilder`'s `build` method, the `RootInteractable` needs to conform to the `LoggedInListener` protocol. Let's add this conformance to the `RootInteractable`:
+
+```swift
+protocol RootInteractable: Interactable, LoggedOutListener, LoggedInListener {
+    weak var router: RootRouting? { get set }
+    weak var listener: RootListener? { get set }
+}
+```
+
 When routing to the LoggedIn RIB, we first detach the `LoggedOutRouter` and dismiss its view. In order to be able to do so, we need to add a new method in the `RootViewControllable` protocol.
 
 Modify the protocol look like this:
@@ -256,7 +265,7 @@ private func attachOffGame() {
 }
 ```
 
-RIBs is unforgivable when it comes to conforming to listener interfaces as they are protocol based. We're using protocols instead of some other implicit listeners, so that the compiler will give you errors when some parent isn't consuming all the events of its children instead of failing at runtime. Now that we pass the `LoggedInInteractable` as a listener to the `OffGameBuilder`'s `build` method, the `LoggedInInteractable` needs to conform to the `OffGameListener` protocol. Let's add this conformance to the `LoggedInInteractable`:
+Now that we pass the `LoggedInInteractable` as a listener to the `OffGameBuilder`'s `build` method, the `LoggedInInteractable` needs to conform to the `OffGameListener` protocol. Let's add this conformance to the `LoggedInInteractable`:
 
 ```swift
 protocol LoggedInInteractable: Interactable, OffGameListener {
