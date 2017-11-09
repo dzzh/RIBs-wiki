@@ -205,7 +205,7 @@ init(interactor: LoggedInInteractable,
 }
 ```
 
-We'll also have to declare a new private constant to hold the offHamBuilder:
+We'll also have to declare a new private constant to hold the offGameBuilder:
 ```swift
 // MARK: - Private
     
@@ -286,20 +286,21 @@ In order to route to TicTacToe, you should implement `routeToTicTacToe` in the `
 
 You should be able to do this without any help from us, right?
 
-## Attach OffGame RIB and detach TicTacToe RIB when we have a winner
+## Attaching the OffGame RIB and detaching the TicTacToe RIB when we have a winner
 
-This is very similar to the other listener based routing we've already exercised. If you used the TicTacToe RIB provided above, a listener is already setup. We just need to implement it in the LoggedInInteractor.
+We want to get back to the OffGame RIB when the game is over. This is very similar to the other listener based routing we've already exercised. The provided TicTacToe RIB already has a listener set up. We just need to implement it in the `LoggedInInteractor`.
 
-Declare routeToOffGame in LoggedInRouting protocol. 
+Declare the `routeToOffGame`method in the `LoggedInRouting` protocol. 
+
 ```swift
 protocol LoggedInRouting: Routing {
-    func cleanupViews()
     func routeToTicTacToe()
     func routeToOffGame()
 }
 ```
 
-Implement gameDidEnd method in LoggedInInteractor. 
+Implement the `gameDidEnd` method in the `LoggedInInteractor` class:
+ 
 ```swift
 // MARK: - TicTacToeListener
 
@@ -308,13 +309,16 @@ func gameDidEnd() {
 }
 ```
 
-Implement routeToOffGame in LoggedInRouter.
+Then, implement the routeToOffGame in the `LoggedInRouter` class.
+
 ```swift
 func routeToOffGame() {
     detachCurrentChild()
     attachOffGame()
 }
 ```
+Also add the private helper method somewhere in your private section:
+
 ```swift
 private func detachCurrentChild() {
     if let currentChild = currentChild {
