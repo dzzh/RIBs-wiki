@@ -280,7 +280,11 @@ This method is invoked from the `LoggedInInteractor` when it resigns its active 
 
 ## Attaching the TicTacToe RIB and detach the OffGame RIB on button tap
 
-This step is very similar to attaching LoggedIn RIB and detaching LoggedOut RIB when the "Login" button it tapped. To save time, the TicTacToe RIB is provided already. In order to route to TicTacToe, we should implement routeToTicTacToe in LoggedInRouter and wire up the button tap event from OffGameViewController to OffGameInteractor and then finally to LoggedInInteractor.
+This step is very similar to attaching LoggedIn RIB and detaching LoggedOut RIB when the "Login" button is tapped. To save time, the TicTacToe RIB is already included in your project. 
+
+In order to route to TicTacToe, you should implement `routeToTicTacToe` in the `LoggedInRouter` class and wire up the button tap event from the `OffGameViewController` to the `OffGameInteractor` and finally to the `LoggedInInteractor`.
+
+You should be able to do this without any help from us, right?
 
 ## Attach OffGame RIB and detach TicTacToe RIB when we have a winner
 
