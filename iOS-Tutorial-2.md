@@ -245,10 +245,12 @@ private func attachOffGame() {
 }
 ```
 
-RIBs is unforgivable when it comes to conforming to listener interfaces as they are protocol based. We're using protocols instead of some other implicit listeners, so that the compiler will give you errors when some parent isn't consuming all the events of its children instead of failing at runtime. Now that we pass the `LoggedInInteractable` as a listener to the `OffGameBuilder`'s `build` method, the `LoggedInInteractable` needs to conform to the `OffGameListener` protocol. Let's add this conformance to the `LoggedInInteractable` by adding the following code to the LoggedInInteractor.swift file:
+RIBs is unforgivable when it comes to conforming to listener interfaces as they are protocol based. We're using protocols instead of some other implicit listeners, so that the compiler will give you errors when some parent isn't consuming all the events of its children instead of failing at runtime. Now that we pass the `LoggedInInteractable` as a listener to the `OffGameBuilder`'s `build` method, the `LoggedInInteractable` needs to conform to the `OffGameListener` protocol. Let's add this conformance to the `LoggedInInteractable`:
 
 ```swift
-extension LoggedInInteractor: OffGameListener {
+protocol LoggedInInteractable: Interactable, OffGameListener {
+    weak var router: LoggedInRouting? { get set }
+    weak var listener: LoggedInListener? { get set }
 }
 ```
 
@@ -306,6 +308,7 @@ Declare the `routeToOffGame`method in the `LoggedInRouting` protocol.
 protocol LoggedInRouting: Routing {
     func routeToTicTacToe()
     func routeToOffGame()
+    func cleanupViews()
 }
 ```
 
