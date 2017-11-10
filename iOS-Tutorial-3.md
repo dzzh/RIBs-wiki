@@ -9,20 +9,25 @@ For tutorial 3, we'll use the source code [here](https://github.com/uber/RIBs/tr
 ## Goals
 
 The main goals of this exercise to understand the following concepts:
-- Pass dynamic dependency via Builder’s build method.
-- Pass static dependencies using the DI tree.
-  - Swift extension based dependency conformance.
-- Rx stream lifecycle management using RIB lifecycle.
+- Passing a dynamic dependency via the Builder’s build method.
+- Passing static dependencies using the Dependency Injection tree.
+  - Extension based dependency conformance in Swift.
+- Rx stream lifecycle management using the RIB lifecycle.
 
-## Pass player names as dynamic dependencies from Root to LoggedIn via LoggedInBuilder’s build method
-Update LoggedInBuildable protocol to include two players as dynamic dependencies, in addition to the existing listener dynamic dependency.
+## Dynamic dependencies
+
+We'd want to pass our player names as dynamic dependencies from the Root RIB to the LoggedIn RIB via the `LoggedInBuilder`’s build method.
+
+For this, we'll update the `LoggedInBuildable` protocol to include two player names as dynamic dependencies, in addition to the existing `listener` dynamic dependency:
+
 ```swift
 protocol LoggedInBuildable: Buildable {
     func build(withListener listener: LoggedInListener, player1Name: String, player2Name: String) -> LoggedInRouting
 }
  ```
 
-Update LoggedInBuilder build method
+Then we'll update the `LoggedInBuilder`'s  `build` method:
+
 ```swift
 func build(withListener listener: LoggedInListener, player1Name: String, player2Name: String) -> LoggedInRouting {
     let component = LoggedInComponent(dependency: dependency,
@@ -30,7 +35,8 @@ func build(withListener listener: LoggedInListener, player1Name: String, player2
                                       player2Name: player2Name)
 ```
 
-and LoggedInComponent initializer to put the player names onto DI tree.
+Finally, we'll update the `LoggedInComponent` initializer to put the player names onto DI tree. We'll store them as constants of the `LoggedInComponent`:
+
 ```swift
 let player1Name: String
 let player2Name: String
@@ -41,9 +47,11 @@ init(dependency: LoggedInDependency, player1Name: String, player2Name: String) {
     super.init(dependency: dependency)
 }
 ```
-This effectively transforms player names from dynamic dependencies taken in from LoggedIn’s parent, to static dependencies for LoggedIn’s children, since they are now static constants on the DI tree.  
 
-Update RootRouter to pass in player names to LoggedInBuildable’s build method.
+This effectively transforms the player names from dynamic dependencies taken in from `LoggedIn`’s parent to static dependencies for any of LoggedIn’s children. 
+
+Next, we'll update the `RootRouter` class to pass in the player names to the `LoggedInBuildable`’s `build` method:
+
 ```swift
 func routeToLoggedIn(withPlayer1Name player1Name: String, player2Name: String) {
     // Detach logged out.
@@ -60,11 +68,14 @@ func routeToLoggedIn(withPlayer1Name player1Name: String, player2Name: String) {
 
 ### Dynamic dependencies vs static dependencies
 
-Let’s examine why we use dynamic dependencies here, instead of just passing down the player names via the normal DI tree. If we give that approach a try, we'll quickly find out that we can't make the player names invariants. They would have to be optional. This is because the player names aren't actually available and cannot be available at the time Root scope is created. So strictly speaking, yes we can use the DI tree, however, it would require us to invalidate the invariants. The implication is then that our app becomes unstable. When we write our code that uses the player names, what do we do if the player names are `nil`? Crash the app? There probably isn't any reasonable handling at all. This is precisely why scoping with RIBs is so powerful. Properly scoped dependencies allow us to make invariant assumptions, thus eliminating any unreasonable or unstable code.
+Let’s examine why we use dynamic dependencies here, instead of just passing down the player names via the normal DI tree. If we give the static approach a try, we'd find that we wouldn't be able to make the player names invariants. They would have to be optionals. This is because the player names aren't actually available at the time Root scope is created. 
 
-## Pass down player names from LoggedIn scope to OffGame scope using DI tree and display them
+The implication of using static optional user names would be that is our application could become unstable. When we write our code that uses the player names, what would we do if the player names for some reason are `nil`? Crash the app? There probably isn't any reasonable handling for this at all. Properly scoped dependencies allow us to make invariant assumptions, thus eliminating any unreasonable or unstable code.
 
-Add player names dependencies in OffGameDependency protocol in OffGameBuilder.swift.
+## Passing down player names from the LoggedIn scope to the OffGame scope using the DI tree
+
+Next we'll want to use the player names in our app and display them in the OffGame RIB. For this, we'll add player names dependencies in the `OffGameDependency` protocol in the OffGameBuilder.swift file:
+
 ```swift
 protocol OffGameDependency: Dependency {
     var player1Name: String { get }
