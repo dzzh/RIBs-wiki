@@ -2,7 +2,7 @@
 
 > Note: If you haven't completed [tutorial 2](iOS-Tutorial-2) yet, we encourage you to do so before jumping into this tutorial.
 
-Welcome to the RIBs tutorials, which have ben designed to give you a hands-on walkthrough through the core concepts of RIBs. As part of the tutorials, you'll be building a simple TicTacToe game using the RIBs architecture and associated tooling.
+Welcome to the RIBs tutorials, which have been designed to give you a hands-on walkthrough through the core concepts of RIBs. As part of the tutorials, you'll be building a simple TicTacToe game using the RIBs architecture and associated tooling.
 
 For tutorial 3, we'll use the source code [here](https://github.com/uber/RIBs/tree/master/ios/tutorials/tutorial3) as a starting point. Follow the [README](https://github.com/uber/RIBs/tree/master/ios/tutorials/tutorial3/README.md) to install and open the project before reading any further.
 
@@ -70,11 +70,11 @@ func routeToLoggedIn(withPlayer1Name player1Name: String, player2Name: String) {
 
 Let’s examine why we use dynamic dependencies here, instead of just passing down the player names via the normal DI tree. If we give the static approach a try, we'd find that we wouldn't be able to make the player names invariants. They would have to be optionals. This is because the player names aren't actually available at the time Root scope is created. 
 
-The implication of using static optional user names would be that is our application could become unstable. When we write our code that uses the player names, what would we do if the player names for some reason are `nil`? Crash the app? There probably isn't any reasonable handling for this at all. Properly scoped dependencies allow us to make invariant assumptions, thus eliminating any unreasonable or unstable code.
+The implication of using static optional usernames would be that is our application could become unstable. When we write our code that uses the player names, what would we do if the player names for some reason are `nil`? Crash the app? There probably isn't any reasonable handling for this at all. Properly scoped dependencies allow us to make invariant assumptions, thus eliminating any unreasonable or unstable code.
 
 ## Passing down player names from the LoggedIn scope to the OffGame scope using the DI tree
 
-Next we'll want to use the player names in our app and display them in the OffGame RIB. For this, we'll add player names dependencies in the `OffGameDependency` protocol in the OffGameBuilder.swift file:
+Next, we'll want to use the player names in our app and display them in the OffGame RIB. For this, we'll add player names dependencies in the `OffGameDependency` protocol in the OffGameBuilder.swift file:
 
 ```swift
 protocol OffGameDependency: Dependency {
@@ -101,7 +101,7 @@ Notice these properties are marked as fileprivate. This means they are only acce
 
 Since we’ve already added the player names to the `LoggedInComponent` in the previous steps, there’s nothing further we need to do to make OffGame’s parent scope - the LoggedIn scope - satisfy these new dependencies we just added.
 
-Next we'll pass these dependencies into the `OffGameViewController` via constructor injection to and display them. We could also pass these into the `OffGameInteractor` first and let the interactor invoke functions on its `OffGamePresentable` to display them, but since this data does not require any business logic or formatting, we can directly pass these to the view controller to display. We'll use `player1Name` and `player2Name` constants in the `OffGameViewController` to store the values passed in through the constructor: 
+Next, we'll pass these dependencies into the `OffGameViewController` via constructor injection to and display them. We could also pass these into the `OffGameInteractor` first and let the interactor invoke functions on its `OffGamePresentable` to display them, but since this data does not require any business logic or formatting, we can directly pass these to the view controller to display. We'll use `player1Name` and `player2Name` constants in the `OffGameViewController` to store the values passed in through the constructor: 
 ```swift
 final class OffGameBuilder: Builder<OffGameDependency>, OffGameBuildable {
     override init(dependency: OffGameDependency) {
@@ -130,9 +130,9 @@ init(player1Name: String, player2Name: String) {
 }
 ```
 
-Finally we'll build some UI to display them using a `UILabel`. To save time, you may use the provided code [here](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial3-rib-di-and-communication/source/source1.swift?raw=true).
+Finally, we'll build some UI to display them using a `UILabel`. To save time, you may use the provided code [here](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial3-rib-di-and-communication/source/source1.swift?raw=true).
 
-## Track scores using a Rx stream
+## Track scores using an Rx stream
 
 In order to determine which is the appropriate scope for our score stream, we should consider where this stream would be used. We need it in the OffGame scope to display the scores. We also need to update the score when a game is won, when TicTacToe invokes its TicTacToeListener up to LoggedIn scope. Therefore, the lowest scope that encompasses all the access needs is LoggedIn.
 
@@ -148,9 +148,9 @@ var mutableScoreStream: MutableScoreStream {
     return shared { ScoreStreamImpl() }
 }
 ```
-A shared instance, means singleton per scope. This allows us to keep a single score stream for LoggedIn RIB and all of its children. Streams are typically scoped singletons, as with most stateful objects. Most other dependencies, however, should be stateless, therefore, not shared.  
+A shared instance means singleton per scope. This allows us to keep a single score stream for LoggedIn RIB and all of its children. Streams are typically scoped singletons, as with most stateful objects. Most other dependencies, however, should be stateless, therefore, not shared.  
 
-Notice how the property is not fileprivate, but rather internal. This is because we know we would need to expose it to children scopes. Otherwise all properties in the base FooComponent class should be fileprivate. Further more, only dependencies that are directly used in the RIB should be placed in the base implementation, with the exception being stored properties that are injected from dynamic dependencies, such as the player names. In this case, because LoggedIn RIB directly uses the mutableScoreStream in LoggedInInteractor, it is appropriate for us to place the stream in the base implementation. Otherwise we would have placed the dependency in the extension LoggedInComponent+OffGame.  
+Notice how the property is not fileprivate, but rather internal. This is because we know we would need to expose it to children scopes. Otherwise, all properties in the base FooComponent class should be fileprivate. Furthermore, only dependencies that are directly used in the RIB should be placed in the base implementation, with the exception being stored properties that are injected from dynamic dependencies, such as the player names. In this case, because LoggedIn RIB directly uses the mutableScoreStream in LoggedInInteractor, it is appropriate for us to place the stream in the base implementation. Otherwise, we would have placed the dependency in the extension LoggedInComponent+OffGame.  
 
 Pass mutableScoreStream into LoggedInInteractor so we can update it later. We’ll also need to update the LoggedInBuilder to make things compile.  
 ```swift
@@ -206,7 +206,7 @@ init(presenter: OffGamePresentable,
 
 Notice this stream is provided as fileprivate, in contrast to the LoggedIn version, where it was internal. This is because we do not intend to expose this down to OffGame’s children, which at the moment, it doesn’t have any anyways.
 
-Because the read-only score stream is only needed by the OffGame scope, and not the LoggedIn scope RIB, we place this dependency in the LoggedInComponent+OffGame extension. The starting point already has a stub implementation. Feel free to create it from scratch using the Component Extension Xcode template. Please spend some time read through the TODO documentation in the file. It should provide insights into what these are for.  
+Because the read-only score stream is only needed by the OffGame scope, and not the LoggedIn scope RIB, we place this dependency in the LoggedInComponent+OffGame extension. The starting point already has a stub implementation. Feel free to create it from scratch using the Component Extension Xcode template. Please spend some time reading through the TODO documentation in the file. It should provide insights into what these are for.  
 ```swift
 extension LoggedInComponent: OffGameDependency {
     var scoreStream: ScoreStream {
@@ -218,7 +218,7 @@ Because our MutableScoreStream protocol extends from the read-only version, we c
 
 ## Display scores by subscribing to the score stream
 
-Whenever the score stream emits a new Score value, we should invoke OffGamePresentable, our OffGameViewController, to show the new score. This type of reactive programming is extremely powerful in the sense that there’s no stored states to maintain, and our UI just automatically updates as the underlying data changes.
+Whenever the score stream emits a new Score value, we should invoke OffGamePresentable, our OffGameViewController, to show the new score. This type of reactive programming is extremely powerful in the sense that there are no stored states to maintain, and our UI just automatically updates as the underlying data changes.
 
 Let’s update the OffGamePresentable protocol so we can set the score value. Remember, this is the protocol we use to communicate from an interactor to its view.  
 ```swift
@@ -241,7 +241,7 @@ private func updateScore() {
 }
 ```
 
-Here we use the disposeOnDeactivate extension to handle our Rx subscription’s lifecycle. As the name suggests, the subscription is automatically disposed when the given interactor, in this case self the OffGameInteractor, is deactivated. We should almost always create Rx subscriptions in our interactor or worker classes to take advantage of these Rx lifecycle management utilities.
+Here we use the disposeOnDeactivate extension to handle our Rx subscription’s lifecycle. As the name suggests, the subscription is automatically disposed when the given interactor, in this case, the `OffGameInteractor`, is deactivated. We should almost always create Rx subscriptions in our interactor or worker classes to take advantage of these Rx lifecycle management utilities.
 
 We then invoke the updateScore method in OffGameInteractor’s didBecomeActive lifecycle method. This allows us to create a new subscription whenever the OffGameInteractor is activated, which ties nicely with the use of disposeOnDeactivate.  
 ```swift
@@ -252,7 +252,7 @@ override func didBecomeActive() {
 }
 ```
 
-Finally we can implement the UI to display the scores. To save time, we can use the implementation provided [here](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial3-rib-di-and-communication/source/source3.swift?raw=true).
+Finally, we can implement the UI to display the scores. To save time, we can use the implementation provided [here](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial3-rib-di-and-communication/source/source3.swift?raw=true).
 
 ## Update score stream when a game is won
 
@@ -267,13 +267,13 @@ protocol TicTacToeListener: class {
 
 Update the TicTacToeInteractor implementation to pass the winner to the listener we just updated.  
 
-There are a couple of ways to do this. We can either store the winner as a local state in the TicTacToeInteractor, or we can let the TicTacToeViewController pass the winner back to the interactor when the view controller invokes closeGame method when the user closes the alert. Technically speaking, both ways are correct and appropriate. Let’s explore the advantages and drawbacks of both solutions.  
+There are a couple of ways to do this. We can either store the winner as a local state in the TicTacToeInteractor, or we can let the TicTacToeViewController pass the winner back to the interactor when the view controller invokes the `closeGame` method when the user closes the alert. Technically speaking, both ways are correct and appropriate. Let’s explore the advantages and drawbacks of both solutions.  
 
 With the local state stored in TicTacToeInteractor approach, the advantage is that we encapsulate all the necessary data within the interactor. The downside is that we have to maintain local, mutable state. Having said that, this is somewhat mitigated by the fact that RIBs are well scoped. The local states are well encapsulated and limited. When we create a new TicTacToe RIB when we launch a new game, the previous one is deallocated with all local states erased.  
 
 With the passing back from view controller approach, we can avoid the local mutable state, but we end up relying on the view controller to pass back business data.  
 
-To get the best of both worlds, we can take advantage of Swift closures. When we invoke the TicTacToePresentable, the view controller, to announce the winner, we can pass an opaque closure to be invoked when the announcement is completed. This encapsulates the winner within the TicTacToeInteractor, without storing any local states. This also removes the need to have the closeGame method in our TicTacToeViewControllerListener protocol.  
+To get the best of both worlds, we can take advantage of Swift closures. When we invoke the TicTacToePresentable, the view controller, to announce the winner, we can pass an opaque closure to be invoked when the announcement is completed. This encapsulates the winner within the TicTacToeInteractor, without storing any local states. This also removes the need to have the `closeGame` method in our TicTacToeViewControllerListener protocol.  
 ```swift
 func placeCurrentPlayerMark(atRow row: Int, col: Int) {
     guard board[row][col] == nil else {
@@ -328,7 +328,7 @@ func gameDidEnd(withWinner winner: PlayerType?) {
 
 So far when the game ends, we have a fixed alert that shows either “Player 1” or “Player 2” has won. Let’s pass down the player names from LoggedIn to TicTacToe scope and display the actual names in the alert instead.
 
-Our current TicTacToe will get stuck if the game is a tie. Let’s update the game logic as well as the necessary display and score keeping logic to handle the tie case.
+Our current TicTacToe will get stuck if the game is a tie. Let’s update the game logic as well as the necessary display and scorekeeping logic to handle the tie case.
 
 ## Tutorial complete
 
