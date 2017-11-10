@@ -2,7 +2,7 @@
 
 > Note: If you haven't completed [tutorial 1](iOS-Tutorial-1) yet, we encourage you to do so before jumping into this tutorial.
 
-Welcome to the RIBs tutorials, which have ben designed to give you a hands-on walkthrough through the core concepts of RIBs. As part of the tutorials, you'll be building a simple TicTacToe game using the RIBs architecture and associated tooling.
+Welcome to the RIBs tutorials, which have been designed to give you a hands-on walkthrough through the core concepts of RIBs. As part of the tutorials, you'll be building a simple TicTacToe game using the RIBs architecture and associated tooling.
 
 For this tutorial, we'll use the source code [here](https://github.com/uber/RIBs/tree/master/ios/tutorials/tutorial2) as a starting point. Follow the [README](https://github.com/uber/RIBs/tree/master/ios/tutorials/tutorial2/README.md) to install and open the project before reading any further.
 
@@ -20,16 +20,16 @@ The main goals of this exercise to understand the following concepts:
 
 ## Calling up to a parent RIB
 
-We want to inform the Root RIB from LoggedOut RIB when the players have logged in. For this we need to implement the following code.
+We want to inform the Root RIB from LoggedOut RIB when the players have logged in. For this, we need to implement the following code.
 
-First, update the `LoggedOutListener` (in the LoggedOutInteractor.swift file) to add a method that allows LoggedOut RIB to inform Root RIB that players has logged in.
+First, update the `LoggedOutListener` (in the LoggedOutInteractor.swift file) to add a method that allows LoggedOut RIB to inform Root RIB that players have logged in.
 ```swift
 protocol LoggedOutListener: class {
     func didLogin(withPlayer1Name player1Name: String, player2Name: String)
 }
 ```
 
-This forces the any parent RIB of the LoggedOut RIB to implement the `didLogin` function and makes sure that the compiler enforces the contract between the parent and its children.
+This forces any parent RIB of the LoggedOut RIB to implement the `didLogin` function and makes sure that the compiler enforces the contract between the parent and its children.
 
 Add a login method implementation to the `LoggedOutInteractor` and have it perform the business logic of handling nil player names, as well as calling to LoggedOutListener to inform its parent (the Root RIB in our project) that the players have login. 
 ```swift
@@ -123,9 +123,9 @@ func build() -> LaunchRouting {
 
 If you look at the code we just modified, we pass in `RootComponent` as the dependency for the `LoggedInBuilder` using constructor injection. Don't worry about why we do this right now, we'll cover this when we get to [tutorial 3](../tutorial3).
 
-`RootRouter` depends on `LoggedInBuildable`, instead of the concrete `LoggedInBuilder` class. This allows us to pass in a test mock for the `LoggedInBuildable` when unit testing the `RootRouter`. This is a constraint of Swift, where swizzling based mocking is not possible. At the same time, this also follows the protocol-based programming principle, ensuring `RootRouter` and `LoggedInBuilder` are not tightly coupled.
+`RootRouter` depends on `LoggedInBuildable`, instead of the concrete `LoggedInBuilder` class. This allows us to pass a test mock for the `LoggedInBuildable` when unit testing the `RootRouter`. This is a constraint of Swift, where swizzling based mocking is not possible. At the same time, this also follows the protocol-based programming principle, ensuring `RootRouter` and `LoggedInBuilder` are not tightly coupled.
 
-Now, lets implement the `routeToLoggedIn` method in the `RootRouter` (by now I'm sure you already know what file `RootRouter` is implemented in). A good place to add it is just before the `// MARK: - Private` section.
+Now, let's implement the `routeToLoggedIn` method in the `RootRouter` (by now I'm sure you already know what file `RootRouter` is implemented in). A good place to add it is just before the `// MARK: - Private` section.
  
 ```swift
 // MARK: - RootRouting
@@ -143,7 +143,7 @@ func routeToLoggedIn(withPlayer1Name player1Name: String, player2Name: String) {
 }
 ```
 
-RIBs is unforgiving when it comes to conforming to listener interfaces as they are protocol based. We're using protocols instead of some other implicit observation methods, so that the compiler will give you errors when any parent isn't consuming all the events of its children instead of failing silently at runtime. Now that we pass the `RootInteractable` as a listener to the `LoggedInBuilder`'s `build` method, the `RootInteractable` needs to conform to the `LoggedInListener` protocol. Let's add this conformance to the `RootInteractable`:
+RIBs is unforgiving when it comes to conforming to listener interfaces as they are protocol based. We're using protocols instead of some other implicit observation methods so that the compiler will give you errors when any parent isn't consuming all the events of its children instead of failing silently at runtime. Now that we pass the `RootInteractable` as a listener to the `LoggedInBuilder`'s `build` method, the `RootInteractable` needs to conform to the `LoggedInListener` protocol. Let's add this conformance to the `RootInteractable`:
 
 ```swift
 protocol RootInteractable: Interactable, LoggedOutListener, LoggedInListener {
@@ -179,7 +179,7 @@ Notice we don't need to call a `RootViewControllable` to show the LoggedIn RIB, 
 
 ## Pass in LoggedInViewControllable instead of creating it
 
-Since the LoggedIn RIB does not own its own view and yet still needs to be able to show the views of it's child RIBs, the LoggedIn RIB needs to use the view of its ancestor. In our case, the parent Root RIB to provide the view.
+Since the LoggedIn RIB does not own its own view and yet still needs to be able to show the views of its child RIBs, the LoggedIn RIB needs to use the view of its ancestor. In our case, the parent Root RIB to provide the view.
 
 Update `RootViewController` to conform to `LoggedInViewControllable`, by adding the following snippet to the end of the file:
 
@@ -190,7 +190,7 @@ extension RootViewController: LoggedInViewControllable {
 }
 ```
 
-Now we need to dependency inject the a `LoggedInViewControllable` conforming instance. We'll not walk you through this right now, as this is the focus area for [tutorial3](../tutorial3-rib-di-and-communication). For now, just override the content of LoggedInBuilder.swift with [this code](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial2-composing-ribs/source/source1.swift?raw=true).
+Now we need to dependency inject the `LoggedInViewControllable` conforming instance. We'll not walk you through this right now, as this is the focus area for [tutorial3](../tutorial3-rib-di-and-communication). For now, just override the content of LoggedInBuilder.swift with [this code](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial2-composing-ribs/source/source1.swift?raw=true).
 
 Now the LoggedIn RIB can show and hide its child RIBs views by invoking methods on the `LoggedInViewControllable`.
 
@@ -215,7 +215,7 @@ init(interactor: LoggedInInteractable,
 }
 ```
 
-We'll also have to declare two new private constant to hold the viewController and offGameBuilder:
+We'll also have to declare two new private constants to hold the viewController and offGameBuilder:
 ```swift
 // MARK: - Private
 
@@ -250,7 +250,7 @@ final class LoggedInComponent: Component<LoggedInDependency>, OffGameDependency 
 }
 ```
 
-Then, we'll implement a `attachOffGame` private method in the `LoggedInRouter`class to build and attach the OffGame RIB and present its view controller. Add the following to the end of your class implementation.
+Then, we'll implement an `attachOffGame` private method in the `LoggedInRouter`class to build and attach the OffGame RIB and present its view controller. Add the following to the end of your class implementation.
 
 ```swift
 // MARK: - Private
@@ -298,7 +298,7 @@ protocol LoggedInViewControllable: ViewControllable {
 
 Similar to other protocol declarations, this declares that LoggedIn RIB **needs** the functionality of dismissing a ViewControllable.
 
-Then we'll update the cleanupViews method of the `LoggedInRouter` to dismiss the views the currentChild's view controller:
+Then we'll update the cleanupViews method of the `LoggedInRouter` to dismiss the views the `currentChild`'s view controller:
 
 ```swift
 func cleanupViews() {
@@ -371,7 +371,7 @@ Let’s write a test that verifies when we invoke `routeToLoggedIn`, the `RootRo
 
 
 ## Tutorial completed
-If you didn't make any mistakes, you should have a project that builds and works. There's also the possibility that we messed up this tutorial, in which case, please open a issue for us.
+If you didn't make any mistakes, you should have a project that builds and works. There's also the possibility that we messed up this tutorial, in which case, please open an issue for us.
 
 You completed the second tutorial. Now onwards to [tutorial 3](iOS-Tutorial-3).
 
