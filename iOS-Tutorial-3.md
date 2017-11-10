@@ -82,8 +82,9 @@ protocol OffGameDependency: Dependency {
     var player2Name: String { get }
 }
 ```
+This declares that the OffGame RIB is dependent on both player names and cannot be instantiated without receiving them from the DI graph.
 
-Provide these dependencies to the OffGame’s own scope using its OffGameComponent.
+Next, we'll provide these dependencies to the OffGame’s own scope using its OffGameComponent.
 ```swift
 final class OffGameComponent: Component<OffGameDependency> {
     fileprivate var player1Name: String {
@@ -96,11 +97,11 @@ final class OffGameComponent: Component<OffGameDependency> {
 }
 ```
 
-Notice these properties are marked as fileprivate. This means they are only accessible within the OffGameBuilder.swift file, therefore, are not exposed to children scopes. We didn’t use the fileprivate access control in LoggedInComponent, because we wanted to expose the values to the OffGame child scope.
+Notice these properties are marked as fileprivate. This means they are only accessible within the OffGameBuilder.swift file, and therefore are not exposed to child scopes. We didn’t use the fileprivate access control in `LoggedInComponent`, because we wanted to provide these values to the OffGame child scope.
 
-Since we’ve already added the player names in LoggedInComponent in the previous step, there’s nothing further we need to do to make OffGame’s parent, LoggedIn, satisfy these new dependencies we just added.
+Since we’ve already added the player names to the `LoggedInComponent` in the previous steps, there’s nothing further we need to do to make OffGame’s parent scope - the LoggedIn scope - satisfy these new dependencies we just added.
 
-Pass these dependencies into the OffGameViewController via constructor injection to display. We could also pass these into the OffGameInteractor first, and let the interactor invoke its OffGamePresentable protocol to display them. Since these data does not require any business logic, it is fine, in this case, to directly pass these to the view controller to display. We should declare player1Name and player2Name properties within the OffGameViewController. 
+Next we'll pass these dependencies into the `OffGameViewController` via constructor injection to and display them. We could also pass these into the `OffGameInteractor` first and let the interactor invoke functions on its `OffGamePresentable` to display them, but since this data does not require any business logic or formatting, we can directly pass these to the view controller to display. We'll use `player1Name` and `player2Name` constants in the `OffGameViewController` to store the values passed in through the constructor: 
 ```swift
 final class OffGameBuilder: Builder<OffGameDependency>, OffGameBuildable {
     override init(dependency: OffGameDependency) {
@@ -117,6 +118,7 @@ final class OffGameBuilder: Builder<OffGameDependency>, OffGameBuildable {
     }
 }
 ```
+
 ```swift
 private let player1Name: String
 private let player2Name: String
@@ -127,7 +129,8 @@ init(player1Name: String, player2Name: String) {
     super.init(nibName: nil, bundle: nil)
 }
 ```
-Finally we can display them using UILabel. To save time, you may use the provided code [here](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial3-rib-di-and-communication/source/source1.swift?raw=true).
+
+Finally we'll build some UI to display them using a `UILabel`. To save time, you may use the provided code [here](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial3-rib-di-and-communication/source/source1.swift?raw=true).
 
 ## Track scores using a Rx stream
 
