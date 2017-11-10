@@ -2,13 +2,13 @@
 
 > Note: If you haven't completed [tutorial 3](Android-Tutorial-3) yet, we encourage you to do so before jumping into this tutorial.
 
-Welcome to the RIBs tutorials, which have ben designed to give you a hands-on walkthrough through the core concepts of RIBs. As part of the tutorials, you'll be building a simple TicTacToe game using the RIBs architecture and associated tooling.
+Welcome to the RIBs tutorials, which have been designed to give you a hands-on walkthrough through the core concepts of RIBs. As part of the tutorials, you'll be building a simple TicTacToe game using the RIBs architecture and associated tooling.
 
 For tutorial 4, we'll start source code that can be found [here](https://github.com/uber/RIBs/tree/master/android/tutorials/tutorial4). Follow the [README](https://github.com/uber/RIBs/tree/master/android/tutorials/tutorial4/README.md) to install and open the project before reading any further.
 
 ## Goals
 The goals of this code lab are to learn the following:
-* Understand basics behind RIB workflows
+* Understand basics of RIB workflows
 * Learn how to create actionable item interfaces, implement their methods, and create workflows to launch specifics flows via deeplinks.
 
 ## Background
@@ -120,13 +120,13 @@ public class LaunchGameWorkflow extends RootWorkflow<Step.NoValue, LaunchGameWor
 }
 ```
 
-This is obviously not fully implemented, but let’s look over a few details here before filling it out. First, let’s take a look at the generics - the first generic is the return type for the entire Workflow, in this case there is no return type. The second generic is the POJO model class that is used to hold information about the deep link.
+This is obviously not fully implemented, but let’s look at a few details here before filling it out. First, let’s take a look at the generics - the first generic is the return type for the entire Workflow, in this case, there is no return type. The second generic is the POJO model class that is used to hold information about the deep link.
 
 To create the pojo model, parseDeeplinkIntent will be implemented to convert an intent to a LaunchGameDeepLinkModel. In addition, the deeplink plugin will run this model through RAVE to ensure the data is valid.
 
 Next, the deep link model will be passed to getSteps() to create a workflow with the model and the initial root actionable item.
 
-First, let’s implement the the LaunchGameDeepLinkModel class and parseDeepLinkIntent method to properly pull out paramters into a model.
+First, let’s implement the LaunchGameDeepLinkModel class and parseDeepLinkIntent method to properly pull out parameters into a model.
 
 Your LaunchGameDeepLinkModel should look like the following:
 
@@ -247,5 +247,3 @@ Let’s test it again with the example link:
 `adb shell am start -a "android.intent.action.VIEW -d rib-tutorials://launchGame?playerOne=PlayerOne\&playerTwo=PlayerTwo\&gameKey=TicTacToe"`
 
 Now, the app should launch into TicTacToe with the correct player names.
-
-
