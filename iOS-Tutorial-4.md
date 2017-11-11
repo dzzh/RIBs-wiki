@@ -18,11 +18,16 @@ In the end, you should be able to open the app from Safari, by calling to the ur
 In order for the application to handle a custom url scheme, we should add the following lines in the `Info.plist`:
 
 ```xml
-<key>CFBundleURLName</key>
-<string>com.ubercab.Game</string>
-<key>CFBundleURLSchemes</key>
+<key>CFBundleURLTypes</key>
 <array>
-    <string>ribs-training</string>
+    <dict>
+        <key>CFBundleURLName</key>
+        <string>com.ubercab.Game</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+            <string>ribs-training</string>
+        </array>
+    </dict>
 </array>
 ```
 
