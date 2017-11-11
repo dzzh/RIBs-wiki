@@ -142,7 +142,7 @@ public protocol LoggedInActionableItem: class {
 }
 ```
 
-Now let's write our workflow in the `Promo` folder. All workflows should inherit from the `Workflow` base class. And since we start at the `Root` scope, initial actionable item type should be the `RootActionableItem`. 
+Now let's write our workflow in the `Promo` folder. We’ll create new `LaunchGameWorkflow.swift`, and remove the `Stub.swift`. All workflows should inherit from the `Workflow` base class. And since we start at the `Root` scope, initial actionable item type should be the `RootActionableItem`. 
 
 ```swift
 import RIBs
