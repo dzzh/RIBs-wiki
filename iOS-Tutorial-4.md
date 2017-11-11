@@ -49,7 +49,7 @@ public func application(_ application: UIApplication, open url: URL, sourceAppli
 }
 ```
 
-The `RootInteractor` is going to be our `UrlHandler`. So we need to make `RootInteractor` to conform to the UrlHandler protocol:
+The `RootInteractor` is going to be our `UrlHandler`. So we need to make `RootInteractor` to conform to the `RootActionableItem` and `UrlHandler` protocols:
 
 ```swift
 final class RootInteractor: PresentableInteractor<RootPresentable>, 
