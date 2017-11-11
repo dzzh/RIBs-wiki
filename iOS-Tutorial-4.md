@@ -15,7 +15,7 @@ In the end, you should be able to open the app from Safari, by calling to the ur
 
 ## Implement the url handler
 
-In order for the application to handle a custom url scheme, we should add the following lines in the Info.plist:
+In order for the application to handle a custom url scheme, we should add the following lines in the `Info.plist`:
 
 ```xml
 <dict>
