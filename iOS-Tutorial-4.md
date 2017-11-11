@@ -2,4 +2,199 @@
 
 > Note: If you haven't completed [tutorial 3](iOS-Tutorial-3) yet, we encourage you to do so before jumping into this tutorial.
 
-This tutorial is still in the works and will be available soon.
+# Deep Linking Workflows
+
+> Note: If you haven't completed [tutorial 3](iOS-Tutorial-3) yet, we encourage you to do so before jumping into this tutorial.
+
+Welcome to the RIBs tutorials, which have been designed to give you a hands-on walkthrough through the core concepts of RIBs. As part of the tutorials, you'll be building a simple TicTacToe game using the RIBs architecture and associated tooling.
+
+For tutorial 4, we'll start source code that can be found [here](https://github.com/uber/RIBs/tree/master/ios/tutorials/tutorial4). Follow the [README](https://github.com/uber/RIBs/tree/master/ios/tutorials/tutorial4/README.md) to install and open the project before reading any further.
+
+## Goals
+The goals of this tutorial are to learn the following:
+* Understand basics of RIB workflows
+* Learn how to create actionable item interfaces, implement their methods, and create workflows to launch specifics flows via deeplinks.
+
+## Implement the workflow
+
+Let's implement the workflow in the `Promo` module. We are assuming the promotion feature is the one that provides this workflow.
+Let's declare the `Root` scope actionable item we need in order to launch a game. For the `Root` scope, we need to wait until the players log in. In order to do that, we simply modify the `RootActionableItem` protocol in the `ActionableItemsCore` module:
+
+```swift
+public protocol RootActionableItem: class {
+    func waitForLogin() -> Observable<(LoggedInActionableItem, ())>
+}
+```
+
+The return type is `Observable<(NextActionableItemType, NextValueType)>`, which allows us to chain another step for the next actionable item with a new value. In our case here, once we are logged in, we are routed to the `LoggedIn` scope. Which means that `NextActionableItemType` is `LoggedInActionableItem` which we'll define in the next step. We don't need any values to process our workflow, so our `NextValueType` is just `Void`.
+
+Once we get to the `LoggedIn` scope, we'll need to launch a game with an ID. So let's define the `LoggedInActionableItem` in a new file. 
+
+```swift
+import RxSwift
+
+public protocol LoggedInActionableItem: class {
+    func launchGame(with id: String) -> Observable<(LoggedInActionableItem, ())>
+}
+```
+
+Now let's write our workflow in the `Promo` module. We'll create a new `LaunchGameWorkflow` file. All workflows should inherit from the `Workflow` base class. And since we start at the `Root` scope, initial actionable item type should be the `RootActionableItem`. 
+
+```swift
+import RIBs
+import RxSwift
+
+public class LaunchGameWorkflow: Workflow<RootActionableItem> {
+    public init(url: URL) {
+        super.init()
+
+        let gameId = parseGameId(from: url)
+
+        self
+            .onStep { (rootItem: RootActionableItem) -> Observable<(LoggedInActionableItem, ())> in
+                rootItem.waitForLogin()
+            }
+            .onStep { (loggedInItem: LoggedInActionableItem, _) -> Observable<(LoggedInActionableItem, ())> in
+                loggedInItem.launchGame(with: gameId)
+            }
+            .commit()
+    }
+
+    private func parseGameId(from url: URL) -> String? {
+        let components = URLComponents(string: url.absoluteString)
+        let items = components?.queryItems ?? []
+        for item in items {
+            if item.name == "gameId" {
+                return item.value
+            }
+        }
+
+        return nil
+    }
+}
+```
+
+Notice both actionable item protocols and the workflow class are public. This allows us to use these in the `GameIntegration` module to integrate our new workflow with the app.
+
+## Integrate the waitForLogin step at the Root scope
+
+As part of the plugin point setup, our `RootInteractor` already conforms to the `RootActionableItem` protocol. In this section, we just need to make it compile by providing the necessary implementations.
+
+Let's implement the new `waitForLogin` method in the `RootInteractor`. Each scope's interactor is always the actionable item for that scope.
+
+Since the "wait for login" action is asynchronous, it's best we use Rx in this case. We first declare a `ReplaySubject` that holds the `LoggedInActionableItem`, in the `RootInteractor`. We use a `ReplaySubject` because once we are logged in, we don't want to wait for the "next" login. 
+
+```swift
+private let launchGameWorkflow: LaunchGameWorkflow?
+private let loggedInActionableItemSubject = ReplaySubject<LoggedInActionableItem>.create(bufferSize: 1)
+```
+
+Next, we can simply return this subject as an `Observable` in our `waitForLogin` method. What this does is, as soon as we have a `LoggedInActionableItem` emitted from the `Observable`, our workflow's step of waiting for login is completed. Therefore, we can move onto the next step with the LoggedInActionableItem as our actionable item type. 
+
+```swift
+// MARK: - RootActionableItem
+
+func waitForLogin() -> Observable<(LoggedInActionableItem, ())> {
+    return loggedInActionableItemSubject
+        .map { (loggedInItem: LoggedInActionableItem) -> (LoggedInActionableItem, ()) in
+            (loggedInItem, ())
+        }
+}
+```
+
+Finally, we need to emit the LoggedInActionableItem into the subject, when we route to logged in. We do this by modifying the `didLogin` method in the `RootInteractor`. 
+
+```swift
+// MARK: - LoggedOutListener
+
+func didLogin(withPlayer1Name player1Name: String, player2Name: String) {
+    let loggedInActionableItem = router?.routeToLoggedIn(withPlayer1Name: player1Name, player2Name: player2Name)
+    if let loggedInActionableItem = loggedInActionableItem {
+        loggedInActionableItemSubject.onNext(loggedInActionableItem)
+    }
+}
+```
+
+As the `didLogin` method's new implementation suggests, we need to update the `RootRouting` protocol's `routeToLoggedIn` method to return the `LoggedInActionableItem` instance, which as mentioned before, should be the `LoggedInInteractor`. 
+
+```swift
+protocol RootRouting: ViewableRouting {
+    func routeToLoggedIn(withPlayer1Name player1Name: String, player2Name: String) -> LoggedInActionableItem
+}
+```
+
+Now let's update the `RootRouter` implementation since the `RootRouting` protocol has been modified. We need to return the `LoggedInActionableItem`, which would be the `LoggedInInteractor`. 
+
+```swift
+func routeToLoggedIn(withPlayer1Name player1Name: String, player2Name: String) -> LoggedInActionableItem {
+    // Detach logged out.
+    if let loggedOut = self.loggedOut {
+        detachChild(loggedOut)
+        viewController.replaceModal(viewController: nil)
+        self.loggedOut = nil
+    }
+
+    let loggedIn = loggedInBuilder.build(withListener: interactor, player1Name: player1Name, player2Name: player2Name)
+    attachChild(loggedIn.router)
+    return loggedIn.actionableItem
+}
+```
+
+As the new `routeToLoggedIn` implementation shows, we now need to update the `LoggedInBuildable` protocol so it returns a tuple of the `LoggedInRouting` and `LoggedInActionableItem`.
+
+```swift
+protocol LoggedInBuildable: Buildable {
+    func build(withListener listener: LoggedInListener, player1Name: String, player2Name: String) -> (router: LoggedInRouting, actionableItem: LoggedInActionableItem)
+}
+```
+ 
+Since the `LoggedInBuildable` protocol has changed, we need to update the `LoggedInBuilder` implementation to conform to the changes. We just need to return back the interactor as well. As mentioned before, the interactor of a scope should be the actionable item for that scope. 
+
+```swift
+func build(withListener listener: LoggedInListener, player1Name: String, player2Name: String) -> (router: LoggedInRouting, actionableItem: LoggedInActionableItem) {
+    let component = LoggedInComponent(dependency: dependency,
+                                      player1Name: player1Name,
+                                      player2Name: player2Name)
+    let interactor = LoggedInInteractor(games: component.games)
+    interactor.listener = listener
+
+    let offGameBuilder = OffGameBuilder(dependency: component)
+    let router = LoggedInRouter(interactor: interactor,
+                          viewController: component.loggedInViewController,
+                          offGameBuilder: offGameBuilder)
+    return (router, interactor)
+}
+```
+
+## Integrate the launchGame step at LoggedIn scope
+
+Let's update the `LoggedInInteractor` to conform to the `LoggedInActionableItem` protocol that we declared earlier. Recall that each scope's interactor should always conform to the actionable item protocol for that scope.  
+
+```swift
+final class LoggedInInteractor: Interactor, LoggedInInteractable, LoggedInActionableItem
+```
+
+We can then provide an implementation to conform to the `LoggedInActionableItem` protocol. 
+
+```swift
+// MARK: - LoggedInActionableItem
+
+func launchGame(with id: String?) -> Observable<(LoggedInActionableItem, ())> {
+    let game: Game? = {
+        for game in games {
+            if game.id.lowercased() == id?.lowercased() {
+                return game
+            }
+        }
+        return nil
+    }()
+    if let game = game {
+        router?.routeToGame(with: game.builder)
+    }
+
+    return Observable.just((self, ()))
+}
+```
+
+
+
