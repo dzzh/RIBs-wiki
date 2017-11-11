@@ -11,7 +11,7 @@ The goals of this tutorial are to learn the following:
 * Understand basics of RIB workflows
 * Learn how to create actionable item interfaces, implement their methods, and create workflows to launch specifics flows via deeplinks.
 
-In the end, you should be able to open the app from Safari, by calling to the url `ribs-training://launchGame?gameId=ticTacToe`, and start a game with the specified `gameId`.
+In the end, you should be able to open the app from Safari, by calling to the url `ribs-training://launchGame?gameId=ticTacToe`, which should start a game with the specified `gameId`.
 
 ## Implement the url handler
 
