@@ -332,6 +332,6 @@ Our current TicTacToe will get stuck if the game is a tie. Let’s update the ga
 
 ## Tutorial complete
 
-Congratulations! You completed tutorial 3. The completed source for this tutorial can be found [here].(https://github.com/uber/RIBs/tree/master/ios/tutorials/tutorial3-completed)
+Congratulations! You completed tutorial 3. The completed source for this tutorial can be found [here](https://github.com/uber/RIBs/tree/master/ios/tutorials/tutorial3-completed).
 
 Now onwards to [tutorial 4](iOS-Tutorial-4).
