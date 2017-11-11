@@ -293,5 +293,17 @@ func launchGame(with id: String?) -> Observable<(LoggedInActionableItem, ())> {
 }
 ```
 
+## Run the workflow
 
+In order to test our implementation, we need to run the app, and open Safari on the same device.
+Then type in the address bar `ribs-training://launchGame?gameId=ticTacToe`. We can also try changing the `gameId` argument to `randomWin` to launch the `RandomWin` game.
 
+Notice the workflow initially waits for players to login. Once players login, the workflow continues and launches the tic-tac-toe game immediately.
+
+## Bonus
+* Display an error when players are already logged in.
+* Display an error when we can’t find a game matching the specified ID.
+
+## Tutorial complete
+
+Congratulations! You completed tutorial 4. The completed source for this tutorial can be found [here](https://github.com/uber/RIBs/tree/master/ios/tutorials/tutorial4-completed).
