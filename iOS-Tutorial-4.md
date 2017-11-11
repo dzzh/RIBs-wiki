@@ -1,7 +1,3 @@
-# Deep Linking
-
-> Note: If you haven't completed [tutorial 3](iOS-Tutorial-3) yet, we encourage you to do so before jumping into this tutorial.
-
 # Deep Linking Workflows
 
 > Note: If you haven't completed [tutorial 3](iOS-Tutorial-3) yet, we encourage you to do so before jumping into this tutorial.
