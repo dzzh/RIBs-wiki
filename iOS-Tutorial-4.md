@@ -7,22 +7,23 @@ Welcome to the RIBs tutorials, which have been designed to give you a hands-on w
 For tutorial 4, we'll start source code that can be found [here](https://github.com/uber/RIBs/tree/master/ios/tutorials/tutorial4). Follow the [README](https://github.com/uber/RIBs/tree/master/ios/tutorials/tutorial4/README.md) to install and open the project before reading any further.
 
 ## Goals
+
 The goals of this tutorial are to learn the following:
 * Understand basics of RIB workflows
 * Learn how to create actionable item interfaces, implement their methods, and create workflows to launch specifics flows via deeplinks.
 
-In the end, you should be able to open the app from Safari, by calling to the url `ribs-training://launchGame?gameId=ticTacToe`, which should start a game with the specified `gameId`.
+In the end, you should be able to open the app from Safari, by opening to the URL `ribs-training://launchGame?gameId=ticTacToe`, which should start a game with an identifier of `gameId`.
 
-## Implement the url handler
+## Implementing the URL handler
 
-In order for the application to handle a custom url scheme, we should add the following lines in the `Info.plist`:
+In order for the application to handle a custom URL scheme, we should add the following lines in the `Info.plist`:
 
 ```xml
 <key>CFBundleURLTypes</key>
 <array>
     <dict>
         <key>CFBundleURLName</key>
-        <string>com.ubercab.Game</string>
+        <string>com.uber.TickTackToe</string>
         <key>CFBundleURLSchemes</key>
         <array>
             <string>ribs-training</string>
@@ -31,7 +32,7 @@ In order for the application to handle a custom url scheme, we should add the fo
 </array>
 ```
 
-As a second step, we'll introduce a new protocol `UrlHandler` in the `AppDelegate.swift`:
+We'll add a new protocol called `UrlHandler` in the `AppDelegate.swift` file:
 
 ```swift
 protocol UrlHandler: class {
@@ -39,13 +40,13 @@ protocol UrlHandler: class {
 }
 ```
 
-Add an instance variable to the `AppDelegate` class:
+And we'll add an instance variable in the `AppDelegate` class:
 
 ```swift
 private var urlHandler: UrlHandler?
 ```
 
-And make sure that the application delegate passes url to the `urlHandler`:
+We'll make sure that the application delegate passes an url to the `urlHandler`:
 
 ```swift
 public func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
@@ -54,7 +55,7 @@ public func application(_ application: UIApplication, open url: URL, sourceAppli
 }
 ```
 
-The `RootInteractor` is going to be our `UrlHandler`. So we need to make `RootInteractor` to conform to the `RootActionableItem` and `UrlHandler` protocols:
+The `RootInteractor` is going to be our `UrlHandler`. We need to make `RootInteractor` conform to `RootActionableItem` and `UrlHandler` protocols:
 
 ```swift
 final class RootInteractor: PresentableInteractor<RootPresentable>, 
@@ -64,7 +65,7 @@ final class RootInteractor: PresentableInteractor<RootPresentable>,
     UrlHandler
 ```
 
-To handle a url we need to pass it to the `LaunchGameWorkflow`, and subscribe to the workflow. We can do that, since `LaunchGameWorkflow`'s `ActionableItem` is `RootActionableItem`, and `RootInteractor` conforms to this protocol.
+To be able to start handling an URL, we'll pass it to the `LaunchGameWorkflow`, and subscribe to the workflow. We can do this as `LaunchGameWorkflow`'s `ActionableItem` is `RootActionableItem`, and `RootInteractor` conforms to this protocol.
 
 ```swift
 // MARK: - UrlHandler
@@ -119,9 +120,10 @@ public func application(_ application: UIApplication, didFinishLaunchingWithOpti
 }
 ```
 
-## Implement the workflow
+## Implementing the workflow
 
-Let's implement the workflow in the `Promo` folder. We are assuming the promotion feature is the one that provides this workflow.
+We'll implement the workflow in the `Promo` project group. We're assuming the promotion feature is the one that provides this workflow.
+
 Let's declare the `Root` scope actionable item we need in order to launch a game. For the `Root` scope, we need to wait until the players log in. In order to do that, we simply modify the `RootActionableItem` protocol:
 
 ```swift
@@ -130,9 +132,9 @@ public protocol RootActionableItem: class {
 }
 ```
 
-The return type is `Observable<(NextActionableItemType, NextValueType)>`, which allows us to chain another step for the next actionable item with a new value. In our case here, once we are logged in, we are routed to the `LoggedIn` scope. Which means that `NextActionableItemType` is `LoggedInActionableItem` which we'll define in the next step. We don't need any values to process our workflow, so our `NextValueType` is just `Void`.
+The return type is `Observable<(NextActionableItemType, NextValueType)>`, which allows us to chain another step for the next actionable item with a new value. In the case of our application, once we are logged in, we are routed to the LoggedIn RIB. Which means that `NextActionableItemType` is `LoggedInActionableItem` which we'll define in the next step. We don't need any values to process our workflow, so our `NextValueType` is just `Void`.
 
-Once we get to the `LoggedIn` scope, we'll need to launch a game with an ID. So let's define the `LoggedInActionableItem` in a new file. 
+Once we get to the LoggedIn RIB, we'll need to launch a game with the identifier provided by the URL. Let's define the `LoggedInActionableItem` in a new file. 
 
 ```swift
 import RxSwift
@@ -142,7 +144,7 @@ public protocol LoggedInActionableItem: class {
 }
 ```
 
-Now let's write our workflow in the `Promo` folder. We’ll create new `LaunchGameWorkflow.swift`, and remove the `Stub.swift`. All workflows should inherit from the `Workflow` base class. And since we start at the `Root` scope, initial actionable item type should be the `RootActionableItem`. 
+Next, we'll create our workflow in the `Promo` project group. We’ll create a new file called `LaunchGameWorkflow.swift`, and remove the `Stub.swift` file, since that is no longer needed. All workflows inherit from the `Workflow` base class. Because we start at the `Root` scope, the initial actionable item type should be the `RootActionableItem`. 
 
 ```swift
 import RIBs
@@ -178,19 +180,21 @@ public class LaunchGameWorkflow: Workflow<RootActionableItem> {
 }
 ```
 
-## Integrate the waitForLogin step at the Root scope
+## Integrating the waitForLogin step at the Root scope
 
-As part of the setup, our `RootInteractor` already conforms to the `RootActionableItem` protocol. In this section, we just need to make it compile by providing the necessary implementations.
+The `RootInteractor` already conforms to the `RootActionableItem` protocol. Now, we just need to make the `RootInteractor` compile by providing the required implementations.
 
-Let's implement the new `waitForLogin` method in the `RootInteractor`. Each scope's interactor is always the actionable item for that scope.
+First, we'll implement the protocol's `waitForLogin` method in the `RootInteractor`. Each scope's interactor is always the actionable item for that scope.
 
-Since the "wait for login" action is asynchronous, it's best we use Rx in this case. We first declare a `ReplaySubject` that holds the `LoggedInActionableItem`, in the `RootInteractor`. We use a `ReplaySubject` because once we are logged in, we don't want to wait for the "next" login. 
+Because the "wait for login" action is asynchronous, it's best we use Rx for the implementation. We first declare a `ReplaySubject` constant that holds the `LoggedInActionableItem` in the `RootInteractor`:
 
 ```swift
 private let loggedInActionableItemSubject = ReplaySubject<LoggedInActionableItem>.create(bufferSize: 1)
 ```
 
-Next, we can simply return this subject as an `Observable` in our `waitForLogin` method. What this does is, as soon as we have a `LoggedInActionableItem` emitted from the `Observable`, our workflow's step of waiting for login is completed. Therefore, we can move onto the next step with the LoggedInActionableItem as our actionable item type. 
+We use a `ReplaySubject` because once we are logged in, we don't really want to wait for the "next" login, but simply replay the "existing" login. 
+
+Next, we return this subject as an `Observable` in our `waitForLogin` method. As soon as we have a `LoggedInActionableItem` emitted from the `Observable`, our workflow's step of waiting for the user to login is completed. Therefore, we can move onto the next step with the LoggedInActionableItem as our actionable item type. 
 
 ```swift
 // MARK: - RootActionableItem
@@ -203,7 +207,7 @@ func waitForLogin() -> Observable<(LoggedInActionableItem, ())> {
 }
 ```
 
-Finally, we need to emit the LoggedInActionableItem into the subject, when we route to logged in. We do this by modifying the `didLogin` method in the `RootInteractor`. 
+Finally, when we route to logged in, we'll emit the `LoggedInActionableItem` onto the `ReplaySubject`. We do this by modifying the `didLogin` method in the `RootInteractor`. 
 
 ```swift
 // MARK: - LoggedOutListener
@@ -216,7 +220,7 @@ func didLogin(withPlayer1Name player1Name: String, player2Name: String) {
 }
 ```
 
-As the `didLogin` method's new implementation suggests, we need to update the `RootRouting` protocol's `routeToLoggedIn` method to return the `LoggedInActionableItem` instance, which as mentioned before, should be the `LoggedInInteractor`. 
+As the `didLogin` method's new implementation suggests, we need to update the `RootRouting` protocol's `routeToLoggedIn` method to return the `LoggedInActionableItem` instance, which will be the `LoggedInInteractor`. 
 
 ```swift
 protocol RootRouting: ViewableRouting {
@@ -224,7 +228,7 @@ protocol RootRouting: ViewableRouting {
 }
 ```
 
-Now let's update the `RootRouter` implementation since the `RootRouting` protocol has been modified. We need to return the `LoggedInActionableItem`, which would be the `LoggedInInteractor`. 
+Now, let's update the `RootRouter` implementation because the `RootRouting` protocol has been modified. We need to return the `LoggedInActionableItem`, which is the `LoggedInInteractor`. 
 
 ```swift
 func routeToLoggedIn(withPlayer1Name player1Name: String, player2Name: String) -> LoggedInActionableItem {
@@ -241,7 +245,7 @@ func routeToLoggedIn(withPlayer1Name player1Name: String, player2Name: String) -
 }
 ```
 
-As the new `routeToLoggedIn` implementation shows, we now need to update the `LoggedInBuildable` protocol so it returns a tuple of the `LoggedInRouting` and `LoggedInActionableItem`.
+We'll update the `LoggedInBuildable` protocol accordingly, so that it returns a tuple of the `LoggedInRouting` and `LoggedInActionableItem` instances.
 
 ```swift
 protocol LoggedInBuildable: Buildable {
@@ -249,7 +253,7 @@ protocol LoggedInBuildable: Buildable {
 }
 ```
  
-Since the `LoggedInBuildable` protocol has changed, we need to update the `LoggedInBuilder` implementation to conform to the changes. We just need to return back the interactor as well. As mentioned before, the interactor of a scope should be the actionable item for that scope. 
+And because the `LoggedInBuildable` protocol has changed, we need to update the `LoggedInBuilder` implementation to conform to the changes. We need to return the interactor as well. As mentioned before, the interactor of a scope is the actionable item for that scope. 
 
 ```swift
 func build(withListener listener: LoggedInListener, player1Name: String, player2Name: String) -> (router: LoggedInRouting, actionableItem: LoggedInActionableItem) {
@@ -267,7 +271,7 @@ func build(withListener listener: LoggedInListener, player1Name: String, player2
 }
 ```
 
-## Integrate the launchGame step at LoggedIn scope
+## Integrating the launchGame step in the LoggedIn scope
 
 Let's update the `LoggedInInteractor` to conform to the `LoggedInActionableItem` protocol that we declared earlier. Recall that each scope's interactor should always conform to the actionable item protocol for that scope.  
 
@@ -275,7 +279,7 @@ Let's update the `LoggedInInteractor` to conform to the `LoggedInActionableItem`
 final class LoggedInInteractor: Interactor, LoggedInInteractable, LoggedInActionableItem
 ```
 
-We can then provide an implementation to conform to the `LoggedInActionableItem` protocol. 
+We then provide an implementation for the `LoggedInInteractor` to conform to the `LoggedInActionableItem` protocol. 
 
 ```swift
 // MARK: - LoggedInActionableItem
@@ -295,14 +299,10 @@ func launchGame(with id: String?) -> Observable<(LoggedInActionableItem, ())> {
 
 ## Run the workflow
 
-In order to test our implementation, we need to run the app, and open Safari on the same device.
-Then type in the address bar `ribs-training://launchGame?gameId=ticTacToe`. We can also try changing the `gameId` argument to `randomWin` to launch the `RandomWin` game.
+In order to test our implementation, we need to run the app once, then open Safari on the same device.
+Type in `ribs-training://launchGame?gameId=ticTacToe` as the address. We can also try changing the `gameId` parameter to `randomWin` to launch the `RandomWin` game.
 
-Notice the workflow initially waits for players to login. Once players login, the workflow continues and launches the tic-tac-toe game immediately.
-
-## Bonus
-* Display an error when players are already logged in.
-* Display an error when we can’t find a game matching the specified ID.
+Notice that the workflow initially waits for players to login. Once players login, the workflow continues and launches the tic-tac-toe game immediately.
 
 ## Tutorial complete
 
