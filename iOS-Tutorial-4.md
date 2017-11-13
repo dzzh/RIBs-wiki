@@ -122,7 +122,7 @@ public func application(_ application: UIApplication, didFinishLaunchingWithOpti
 ## Implement the workflow
 
 Let's implement the workflow in the `Promo` folder. We are assuming the promotion feature is the one that provides this workflow.
-Let's declare the `Root` scope actionable item we need in order to launch a game. For the `Root` scope, we need to wait until the players log in. In order to do that, we simply modify the `RootActionableItem` protocol in the `ActionableItemsCore` module:
+Let's declare the `Root` scope actionable item we need in order to launch a game. For the `Root` scope, we need to wait until the players log in. In order to do that, we simply modify the `RootActionableItem` protocol:
 
 ```swift
 public protocol RootActionableItem: class {
