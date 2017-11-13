@@ -132,27 +132,29 @@ init(player1Name: String, player2Name: String) {
 
 Finally, we'll build some UI to display them using a `UILabel`. To save time, you may use the provided code [here](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial3-rib-di-and-communication/source/source1.swift?raw=true).
 
-## Track scores using an Rx stream
+## Track scores using a ReactiveX stream
 
-In order to determine which is the appropriate scope for our score stream, we should consider where this stream would be used. We need it in the OffGame scope to display the scores. We also need to update the score when a game is won, when TicTacToe invokes its TicTacToeListener up to LoggedIn scope. Therefore, the lowest scope that encompasses all the access needs is LoggedIn.
+In order to determine which scope our score stream should live in, we should consider where this stream would be used. We need it in the OffGame scope to display the scores from a previous game. We also need to update the score when a game is won, when the TicTacToe RIB invokes its `TicTacToeListener` up to LoggedIn scope. Therefore, the lowest scope that encompasses all the access requirements is LoggedIn.
 
-Create a score Rx stream class/file in the LoggedIn folder.  
+We'll create a score ReactiveX stream file and class in the LoggedIn folder.  
 
 To save time, here’s the implementation of the [ScoreStream](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial3-rib-di-and-communication/source/source2.swift?raw=true) class.  
 
 Notice there are two versions of the score stream protocol, a read-only version named ScoreStream, and mutable version named MutableScoreStream. We’ll go over how they are used below.
 
-Create a shared ScoreStream instance at the LoggedIn scope in LoggedInComponent.  
+Create a shared `ScoreStream` instance at the LoggedIn scope in `LoggedInComponent`.  
 ```swift
 var mutableScoreStream: MutableScoreStream {
     return shared { ScoreStreamImpl() }
 }
 ```
-A shared instance means singleton per scope. This allows us to keep a single score stream for LoggedIn RIB and all of its children. Streams are typically scoped singletons, as with most stateful objects. Most other dependencies, however, should be stateless, therefore, not shared.  
 
-Notice how the property is not fileprivate, but rather internal. This is because we know we would need to expose it to children scopes. Otherwise, all properties in the base FooComponent class should be fileprivate. Furthermore, only dependencies that are directly used in the RIB should be placed in the base implementation, with the exception being stored properties that are injected from dynamic dependencies, such as the player names. In this case, because LoggedIn RIB directly uses the mutableScoreStream in LoggedInInteractor, it is appropriate for us to place the stream in the base implementation. Otherwise, we would have placed the dependency in the extension LoggedInComponent+OffGame.  
+A shared instance means that it's a singleton per scope. This allows us to keep a single score stream for LoggedIn RIB and all of its children. Streams are typically scoped singletons, as with most stateful objects. Most other dependencies, however, should be stateless, therefore, not shared.  
 
-Pass mutableScoreStream into LoggedInInteractor so we can update it later. We’ll also need to update the LoggedInBuilder to make things compile.  
+Notice how the property is not fileprivate, but rather internal. This is because we need to expose it to child scopes. Otherwise, all properties in the a component class should be fileprivate. Furthermore, only dependencies that are directly used in the RIB should be placed in the base implementation, with the exception being stored properties that are injected from dynamic dependencies, such as the player names. In this case, because LoggedIn RIB directly uses the `mutableScoreStream` in the `LoggedInInteractor` class, it is appropriate for us to place the stream in the base implementation. Otherwise, we would have placed the dependency in the extension LoggedInComponent+OffGame. 
+
+Now, lets pass the `mutableScoreStream` into the `LoggedInInteractor` so that it can update the scores later. We’ll also need to update the LoggedInBuilder to make the project compile.
+ 
 ```swift
 func build(withListener listener: LoggedInListener, player1Name: String, player2Name: String) -> LoggedInRouting {
     let component = LoggedInComponent(dependency: dependency,
@@ -160,6 +162,7 @@ func build(withListener listener: LoggedInListener, player1Name: String, player2
                                       player2Name: player2Name)
     let interactor = LoggedInInteractor(mutableScoreStream: component.mutableScoreStream)
 ```
+
 ```swift
 private let mutableScoreStream: MutableScoreStream
 
@@ -168,9 +171,10 @@ init(mutableScoreStream: MutableScoreStream) {
 }
 ```
  
-## Pass read-only ScoreStream down to OffGame scope for display
+## Passing a read-only ScoreStream down to OffGame scope for display
 
-Declare the read-only ScoreStream as a dependency of the OffGame scope, in the OffGameDependency protocol.  
+Now we'd want to pass down a read-only version of the ScoreStream down to the OffGame RIB so that it can display (but not update) the player scores from a previous game. Declare the read-only ScoreStream as a dependency of the OffGame scope, in the `OffGameDependency` protocol. 
+ 
 ```swift
 protocol OffGameDependency: Dependency {
     var player1Name: String { get }
@@ -179,12 +183,16 @@ protocol OffGameDependency: Dependency {
 }
 ```
 
-Provide the stream dependency to the current scope in OffGameComponent, OffGame and inject it into the interactor for later use.  
+Then we'll provide the dependency to the current scope in `OffGameComponent`:
+ 
 ```swift
 fileprivate var scoreStream: ScoreStream {
     return dependency.scoreStream
 }
 ```
+
+The OffGame builder will be modified to inject the stream into the `OffGameInteractor` for later use. 
+
 ```swift
 func build(withListener listener: OffGameListener) -> OffGameRouting {
     let component = OffGameComponent(dependency: dependency)
@@ -193,6 +201,9 @@ func build(withListener listener: OffGameListener) -> OffGameRouting {
     let interactor = OffGameInteractor(presenter: viewController,
                                        scoreStream: component.scoreStream)
 ```
+
+Finally, we'll update the `OffGameInteractor` constructor to receive the score stream and store it in a private constant:
+
 ```swift
 private let scoreStream: ScoreStream
 
@@ -206,7 +217,10 @@ init(presenter: OffGamePresentable,
 
 Notice this stream is provided as fileprivate, in contrast to the LoggedIn version, where it was internal. This is because we do not intend to expose this down to OffGame’s children, which at the moment, it doesn’t have any anyways.
 
-Because the read-only score stream is only needed by the OffGame scope, and not the LoggedIn scope RIB, we place this dependency in the LoggedInComponent+OffGame extension. The starting point already has a stub implementation. Feel free to create it from scratch using the Component Extension Xcode template. Please spend some time reading through the TODO documentation in the file. It should provide insights into what these are for.  
+Because the read-only score stream is only needed by the OffGame scope, and not the LoggedIn scope RIB, we place this dependency in the LoggedInComponent+OffGame extension. The starting point already has a stub implementation. 
+
+Feel free to create it from scratch using the Component Extension Xcode template. Please spend some time reading through the TODO documentation in the file. It should provide insights into what these are for.  
+
 ```swift
 extension LoggedInComponent: OffGameDependency {
     var scoreStream: ScoreStream {
@@ -214,13 +228,15 @@ extension LoggedInComponent: OffGameDependency {
     }
 }
 ```
+
 Because our MutableScoreStream protocol extends from the read-only version, we can just directly expose that. As mentioned before, this is why we marked the mutableScoreStream dependency in LoggedInComponent class as internal, instead of fileprivate. We need to expose it down to children scopes.
 
 ## Display scores by subscribing to the score stream
 
-Whenever the score stream emits a new Score value, we should invoke OffGamePresentable, our OffGameViewController, to show the new score. This type of reactive programming is extremely powerful in the sense that there are no stored states to maintain, and our UI just automatically updates as the underlying data changes.
+Whenever the score stream emits a new Score value, we should invoke `OffGamePresentable` to update our `OffGameViewController` and show the new score. This type of [reactive programming](http://reactivex.io/) is extremely powerful in the sense that there are no stored states to maintain, and our UI just automatically updates as the underlying data changes.
 
-Let’s update the OffGamePresentable protocol so we can set the score value. Remember, this is the protocol we use to communicate from an interactor to its view.  
+Let’s update the `OffGamePresentable` protocol so we can set the score value. Remember, this is the protocol we use to communicate from the interactor to its view.  
+
 ```swift
 protocol OffGamePresentable: Presentable {
     weak var listener: OffGamePresentableListener? { get set }
@@ -228,7 +244,8 @@ protocol OffGamePresentable: Presentable {
 }
 ```
 
-We create a subscription in OffGameInteractor and invoke the OffGamePresentable to set to the new score when the stream emits a value.  
+We create a subscription in the `OffGameInteractor` class and invoke the `OffGamePresentable` to set to the new score when the stream emits a value.
+  
 ```swift
 private func updateScore() {
     scoreStream.score
@@ -243,7 +260,8 @@ private func updateScore() {
 
 Here we use the disposeOnDeactivate extension to handle our Rx subscription’s lifecycle. As the name suggests, the subscription is automatically disposed when the given interactor, in this case, the `OffGameInteractor`, is deactivated. We should almost always create Rx subscriptions in our interactor or worker classes to take advantage of these Rx lifecycle management utilities.
 
-We then invoke the updateScore method in OffGameInteractor’s didBecomeActive lifecycle method. This allows us to create a new subscription whenever the OffGameInteractor is activated, which ties nicely with the use of disposeOnDeactivate.  
+We then invoke the updateScore method in `OffGameInteractor`’s `didBecomeActive` lifecycle method. This allows us to create a new subscription whenever the `OffGameInteractor` is activated, which ties nicely with the use of `disposeOnDeactivate`. 
+ 
 ```swift
 override func didBecomeActive() {
     super.didBecomeActive()
@@ -254,26 +272,27 @@ override func didBecomeActive() {
 
 Finally, we can implement the UI to display the scores. To save time, we can use the implementation provided [here](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial3-rib-di-and-communication/source/source3.swift?raw=true).
 
-## Update score stream when a game is won
+## Updating the score stream when a game is won
 
-When a game is won, TicTacToe invokes its listener to call up to LoggedInInteractor. This is where we should update our score stream.
+When a game is won, the TicTacToe RIB invokes its listener to call up to `LoggedInInteractor`. This is where we should update our score stream.
 
-Update TicTacToe’s listener to provide context on which player had just won.  
+Update TicTacToe’s listener to provide context on which player had just won. 
+ 
 ```swift
 protocol TicTacToeListener: class {
     func gameDidEnd(withWinner winner: PlayerType?)
 }
 ```
 
-Update the TicTacToeInteractor implementation to pass the winner to the listener we just updated.  
+Now we'll update the `TicTacToeInteractor` implementation to pass the winner to the listener we just updated.  
 
-There are a couple of ways to do this. We can either store the winner as a local state in the TicTacToeInteractor, or we can let the TicTacToeViewController pass the winner back to the interactor when the view controller invokes the `closeGame` method when the user closes the alert. Technically speaking, both ways are correct and appropriate. Let’s explore the advantages and drawbacks of both solutions.  
+There are a couple of ways to do this. We can either store the winner as a local state in the TicTacToeInteractor, or we can let the `TicTacToeViewController` pass the winner back to the interactor when the view controller invokes the `closeGame` method when the user closes the alert. Technically speaking, both ways are correct and appropriate. Let’s explore the advantages and drawbacks of both solutions.  
 
-With the local state stored in TicTacToeInteractor approach, the advantage is that we encapsulate all the necessary data within the interactor. The downside is that we have to maintain local, mutable state. Having said that, this is somewhat mitigated by the fact that RIBs are well scoped. The local states are well encapsulated and limited. When we create a new TicTacToe RIB when we launch a new game, the previous one is deallocated with all local states erased.  
+With the local state stored in TicTacToeInteractor approach, the advantage is that we encapsulate all the necessary data within the interactor. The downside is that we have to maintain local, mutable state. This is somewhat mitigated by the fact that our RIBs are well scoped. The local states of each RIB are well encapsulated and limited. When we create a new TicTacToe RIB when we launch a new game, the previous one is deallocated with all local states erased.  
 
 With the passing back from view controller approach, we can avoid the local mutable state, but we end up relying on the view controller to pass back business data.  
 
-To get the best of both worlds, we can take advantage of Swift closures. When we invoke the TicTacToePresentable, the view controller, to announce the winner, we can pass an opaque closure to be invoked when the announcement is completed. This encapsulates the winner within the TicTacToeInteractor, without storing any local states. This also removes the need to have the `closeGame` method in our TicTacToeViewControllerListener protocol.  
+To get the best of both worlds, we can take advantage of Swift closures. When we invoke the `TicTacToePresentable`, the view controller, to announce the winner, we can pass an opaque closure to be invoked when the announcement is completed. This encapsulates the winner within the `TicTacToeInteractor`, without storing any local states. This also removes the need to have the `closeGame` method in our TicTacToeViewControllerListener protocol.  
 ```swift
 func placeCurrentPlayerMark(atRow row: Int, col: Int) {
     guard board[row][col] == nil else {
