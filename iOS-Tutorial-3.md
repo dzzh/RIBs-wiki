@@ -286,13 +286,14 @@ protocol TicTacToeListener: class {
 
 Now we'll update the `TicTacToeInteractor` implementation to pass the winner to the listener we just updated.  
 
-There are a couple of ways to do this. We can either store the winner as a local state in the TicTacToeInteractor, or we can let the `TicTacToeViewController` pass the winner back to the interactor when the view controller invokes the `closeGame` method when the user closes the alert. Technically speaking, both ways are correct and appropriate. Let’s explore the advantages and drawbacks of both solutions.  
+There are a couple of ways to do this. We can either store the winner as a local state in the `TicTacToeInteractor`, or we can let the `TicTacToeViewController` pass the winner back to the interactor when the view controller invokes the `closeGame` method when the user closes the alert. Technically speaking, both ways are correct and appropriate. Let’s explore the advantages and drawbacks of both solutions.  
 
 With the local state stored in TicTacToeInteractor approach, the advantage is that we encapsulate all the necessary data within the interactor. The downside is that we have to maintain local, mutable state. This is somewhat mitigated by the fact that our RIBs are well scoped. The local states of each RIB are well encapsulated and limited. When we create a new TicTacToe RIB when we launch a new game, the previous one is deallocated with all local states erased.  
 
 With the passing back from view controller approach, we can avoid the local mutable state, but we end up relying on the view controller to pass back business data.  
 
-To get the best of both worlds, we can take advantage of Swift closures. When we invoke the `TicTacToePresentable`, the view controller, to announce the winner, we can pass an opaque closure to be invoked when the announcement is completed. This encapsulates the winner within the `TicTacToeInteractor`, without storing any local states. This also removes the need to have the `closeGame` method in our TicTacToeViewControllerListener protocol.  
+To get the best of both worlds, we can take advantage of Swift closures. When we invoke the `TicTacToePresentable`, the view controller, to announce the winner, we pass an opaque closure to be invoked when the announcement is completed. This encapsulates the winner within the `TicTacToeInteractor`, without storing any local states. This also removes the need to have the `closeGame` method in our `TicTacToeViewControllerListener` protocol:
+ 
 ```swift
 func placeCurrentPlayerMark(atRow row: Int, col: Int) {
     guard board[row][col] == nil else {
@@ -310,6 +311,7 @@ func placeCurrentPlayerMark(atRow row: Int, col: Int) {
     }
 }
 ```
+
 ```swift
 func announce(winner: PlayerType?, withCompletionHandler handler: @escaping () -> ()) {
     let winnerString: String = {
@@ -333,7 +335,8 @@ func announce(winner: PlayerType?, withCompletionHandler handler: @escaping () -
 }
 ```
 
-We’ve already injected in the MutableScoreStream before, so we can just directly use it in LoggedInInteractor.  
+We’ve already injected the `MutableScoreStream` previously, so we can just directly use it in the `LoggedInInteractor`.
+  
 ```swift
 func gameDidEnd(withWinner winner: PlayerType?) {
     if let winner = winner {
@@ -343,11 +346,11 @@ func gameDidEnd(withWinner winner: PlayerType?) {
 }
 ```
 
-## Bonus
+## Bonus implementations
 
-So far when the game ends, we have a fixed alert that shows either “Player 1” or “Player 2” has won. Let’s pass down the player names from LoggedIn to TicTacToe scope and display the actual names in the alert instead.
+So far when the game ends, we have a fixed alert that shows either “Player 1” or “Player 2” has won. We could pass down the player names from the LoggedIn scope to the TicTacToe scope and display the actual names in the alert instead.
 
-Our current TicTacToe will get stuck if the game is a tie. Let’s update the game logic as well as the necessary display and scorekeeping logic to handle the tie case.
+Our current TicTacToe game will get stuck if the game is a tie. We could update the game logic as well as the necessary UI and scorekeeping logic to handle a tie case.
 
 ## Tutorial complete
 
