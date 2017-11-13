@@ -12,7 +12,7 @@ The goals of this tutorial are to learn the following:
 * Understand basics of RIB workflows
 * Learn how to create actionable item interfaces, implement their methods, and create workflows to launch specifics flows via deeplinks.
 
-In the end, you should be able to open the app from Safari, by opening to the URL `ribs-training://launchGame?gameId=ticTacToe`, which should start a game with an identifier of `gameId`.
+In the end, you should be able to open the app from Safari, by opening the URL `ribs-training://launchGame?gameId=ticTacToe`, which should start a game with an identifier of `gameId`.
 
 ## Implementing the URL handler
 
@@ -23,7 +23,7 @@ In order for the application to handle a custom URL scheme, we should add the fo
 <array>
     <dict>
         <key>CFBundleURLName</key>
-        <string>com.uber.TickTackToe</string>
+        <string>com.uber.TicTacToe</string>
         <key>CFBundleURLSchemes</key>
         <array>
             <string>ribs-training</string>
@@ -46,7 +46,7 @@ And we'll add an instance variable in the `AppDelegate` class:
 private var urlHandler: UrlHandler?
 ```
 
-We'll make sure that the application delegate passes an url to the `urlHandler`:
+We'll make sure that the application delegate passes a URL to the `urlHandler`:
 
 ```swift
 public func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
@@ -65,7 +65,7 @@ final class RootInteractor: PresentableInteractor<RootPresentable>,
     UrlHandler
 ```
 
-To be able to start handling an URL, we'll pass it to the `LaunchGameWorkflow`, and subscribe to the workflow. We can do this as `LaunchGameWorkflow`'s `ActionableItem` is `RootActionableItem`, and `RootInteractor` conforms to this protocol.
+To be able to start handling a URL, we'll pass it to the `LaunchGameWorkflow`, and subscribe to the workflow. We can do this as `LaunchGameWorkflow`'s `ActionableItem` is `RootActionableItem`, and `RootInteractor` conforms to this protocol.
 
 ```swift
 // MARK: - UrlHandler
@@ -134,7 +134,7 @@ public protocol RootActionableItem: class {
 
 The return type is `Observable<(NextActionableItemType, NextValueType)>`, which allows us to chain another step for the next actionable item with a new value. In the case of our application, once we are logged in, we are routed to the LoggedIn RIB. Which means that `NextActionableItemType` is `LoggedInActionableItem` which we'll define in the next step. We don't need any values to process our workflow, so our `NextValueType` is just `Void`.
 
-Once we get to the LoggedIn RIB, we'll need to launch a game with the identifier provided by the URL. Let's define the `LoggedInActionableItem` in a new file. 
+Once we get to the `LoggedIn` RIB, we'll need to launch a game with the identifier provided by the URL. Let's define the `LoggedInActionableItem` in a new file. 
 
 ```swift
 import RxSwift
