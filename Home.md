@@ -62,7 +62,7 @@ RIBs only make state decisions within their scope. For example, the LoggedIn RIB
 
 Not all state can be stored by the addition/removal of RIBs. For example, when a user’s profile settings change no RIB is attached or detached. Typically, we store this state inside streams of immutable models that re-emit when details change. For example, the user’s name may be stored in a ProfileDataStream that lives inside the LoggedIn scope. Only network responses have write access to this stream. We pass an interface that provides read access to these streams down the DI graph.
 
-There is nothing in RIBs that forces a single source of truth for RIB state. This is in contrast to what some opinionated frameworks, like React, already provide out of the box.  Within the context of each RIB, you can choose to adopt patterns that promote unidirectional data flow, orr you can allow business state and view state to temporarily diverge in order to take advantage of efficient platform animation frameworks.
+There is nothing in RIBs that forces a single source of truth for RIB state. This is in contrast to what more opinionated frameworks, like React, already provide out of the box.  Within the context of each RIB, you can choose to adopt patterns that promote unidirectional data flow, or you can allow business state and view state to temporarily diverge in order to take advantage of efficient platform animation frameworks.
 
 
 ## Communication Between RIBs
