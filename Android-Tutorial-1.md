@@ -164,7 +164,7 @@ Create the XML layout with the following views:
 </com.uber.rib.root.logged_out.LoggedOutView>
 ```
 
-In order for this view to work, you'll need to update the `LoggedOutView` to inherit from `FrameLayout`.
+In order for this view to work, you'll need to update the `LoggedOutView` to inherit from `LinearLayout`.
 
 ### Step 6
 Let’s make the LoggedOut RIB do something: clicking on the Login button should log user’s name. First, configure the LoggedOutPresenter (nested inside LoggedOutInteractor) to have the following interface. 
