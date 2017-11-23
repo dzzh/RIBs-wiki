@@ -299,7 +299,7 @@ scoreStream.scores()
 ```
 
 Now, when we run the app, it'll display the current score for each player instead of dummy text:
-<img src="https://github.com/uber/RIBs/blob/master/android/tutorials/tutorial3/tutorial_assets/off_game.png?raw=true" width="600">
+<img src="https://github.com/uber/RIBs/blob/master/android/tutorials/tutorial3-completed/tutorial_assets/off_game.png?raw=true" width="600">
 
 Let's take a look at our Rx subscription to the `ScoreStream` again - what happens if we want to detach and garbage collect the `OffGame` RIB? Currently, it will cause a memory leak because it's subscribed to the `ScoreStream` which is scoped to the `LoggedInScope`. To fix this, we update our code to use `AutoDispose` to automatically unsubscribe when `OffGame` is detached:
 ```java
