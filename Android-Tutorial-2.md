@@ -20,7 +20,7 @@ The goals of this code lab are to learn the following:
 In this code lab, we will implement  a basic TicTacToe game that demonstrates basic inter-RIB communication, unit testing, and RIB lifecycles. This tutorial attempts to ignore dependency injection as much as possible.
 
 The application’s RIB structure will look like the following. You are given the yellow nodes to start with. You’ll need to write the white nodes yourself and hook it up.
-<img src="https://github.com/uber/RIBs/blob/master/android/tutorials/tutorial2-composing-ribs-starter-code/tutorial_assets/overview.png?raw=true" width="600">
+<img src="https://github.com/uber/RIBs/blob/master/android/tutorials/tutorial2/tutorial_assets/overview.png?raw=true" width="600">
 
 When done with this tutorial the application will contain the following behavior:
 * Clicking Login inside LoggedOut will detach the LoggedOut RIB and attach the LoggedIn RIB
@@ -28,7 +28,7 @@ When done with this tutorial the application will contain the following behavior
 * Clicking “Start Game” will detach OffGame and attach TicTacToe
 
 The application will look like the following once you are done
-<img src="https://github.com/uber/RIBs/blob/master/android/tutorials/tutorial2-composing-ribs-starter-code/tutorial_assets/result.png?raw=true" width="600">
+<img src="https://github.com/uber/RIBs/blob/master/android/tutorials/tutorial2/tutorial_assets/result.png?raw=true" width="600">
 
 LoggedOut View (left), OffGame View (middle) and TicTacToe View (right)
 
