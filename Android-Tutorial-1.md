@@ -55,11 +55,11 @@ under the RootRib.
 
 Right click the “logged_out” package and select New > New RIB
 
-<img src="https://github.com/uber/RIBs/blob/master/android/tutorials/tutorial1-create-a-rib/tutorial_assets/create_rib.png?raw=true" width="600">
+<img src="https://github.com/uber/RIBs/blob/master/android/tutorials/tutorial1/tutorial_assets/create_rib.png?raw=true" width="600">
 
 Create the LoggedOut RIB. You’ll now see the following files.
 
-<img src="https://github.com/uber/RIBs/blob/master/android/tutorials/tutorial1-create-a-rib/tutorial_assets/logged_out_files.png?raw=true" width="600">
+<img src="https://github.com/uber/RIBs/blob/master/android/tutorials/tutorial1/tutorial_assets/logged_out_files.png?raw=true" width="600">
 
 ### Step 4
 We want to hook up the LoggedOutRib so that it is attached whenever the RootRib 
