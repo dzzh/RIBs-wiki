@@ -51,7 +51,7 @@ RIB. Since this tutorial is being built as a single module, let's nest the “lo
 package under “root”. This is a nice organizational structure since the LoggedOutRib will nest 
 under the RootRib.
 
-<img src="https://github.com/uber/RIBs/blob/master/android/tutorials/tutorial1-create-a-rib/tutorial_assets/logged_out.png?raw=true" width="600">
+<img src="https://github.com/uber/RIBs/blob/master/android/tutorials/tutorial1/tutorial_assets/logged_out.png?raw=true" width="600">
 
 Right click the “logged_out” package and select New > New RIB
 
