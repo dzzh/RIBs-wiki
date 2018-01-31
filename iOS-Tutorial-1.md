@@ -91,5 +91,13 @@ private func playerName(_ name: String?, withDefaultName defaultName: String) ->
 
 For now, when the user logs in, we'll just print out the user names.
 
+Finally, we'll hook up our ViewController to call the listener method when the login-button is pressed. In LoggedOutViewController.swift, change the `didTapLoginButton` method (in case you used our UI code) to the following implementation:
+
+```swift
+@objc private func didTapLoginButton() {
+    listener?.login(withPlayer1Name: player1Field?.text, player2Name: player2Field?.text)
+}
+```
+
 ## Tutorial complete
 Congratulations! You just created your first RIB. Now onwards to [tutorial 2](iOS-Tutorial-2).
