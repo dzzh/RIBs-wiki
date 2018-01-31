@@ -69,7 +69,27 @@ protocol LoggedOutPresentableListener: class {
 }
 ```
 
-Notice that both player names are optional, since the user may not enter anything for the player names. We could disable the Login button until both names are entered, but for this exercise, we’ll let the LoggedOutInteractor deal with the business logic of handling nil names. If player names are empty, we'll want to default them to "Player 1" and "Player 2".
+Notice that both player names are optional, since the user may not enter anything for the player names. We could disable the Login button until both names are entered, but for this exercise, we’ll let the LoggedOutInteractor deal with the business logic of handling nil names. If player names are empty, we'll want to default them to "Player 1" and "Player 2" in the implementation.
+
+Next, we'll modify LoggedOutInteractor to conform to the modified `LoggedOutPresentableListener` protocol, by adding the following methods:
+
+```swift
+func login(withPlayer1Name player1Name: String?, player2Name: String?) {
+    let player1NameWithDefault = playerName(player1Name, withDefaultName: "Player 1")
+    let player2NameWithDefault = playerName(player2Name, withDefaultName: "Player 2")
+    print("\(player1NameWithDefault) vs \(player2NameWithDefault)")
+}
+
+private func playerName(_ name: String?, withDefaultName defaultName: String) -> String {
+    if let name = name {
+        return name.isEmpty ? defaultName : name
+    } else {
+        return defaultName
+    }
+}
+```
+
+For now, when the user logs in, we'll just print out the user names.
 
 ## Tutorial complete
 Congratulations! You just created your first RIB. Now onwards to [tutorial 2](iOS-Tutorial-2).
