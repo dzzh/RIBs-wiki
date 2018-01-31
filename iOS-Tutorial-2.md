@@ -31,23 +31,12 @@ protocol LoggedOutListener: class {
 
 This forces any parent RIB of the LoggedOut RIB to implement the `didLogin` function and makes sure that the compiler enforces the contract between the parent and its children.
 
-Add a login method implementation to the `LoggedOutInteractor` and have it perform the business logic of handling nil player names, as well as calling to LoggedOutListener to inform its parent (the Root RIB in our project) that the players have login. 
+We'll change the `login` method implementation of the `LoggedOutInteractor` and have call to LoggedOutListener to inform its parent (the Root RIB in our project) that the players have login instead of just printing out the player names.
 ```swift
-// MARK: - LoggedOutPresentableListener
-
 func login(withPlayer1Name player1Name: String?, player2Name: String?) {
     let player1NameWithDefault = playerName(player1Name, withDefaultName: "Player 1")
     let player2NameWithDefault = playerName(player2Name, withDefaultName: "Player 2")
-
     listener?.didLogin(withPlayer1Name: player1NameWithDefault, player2Name: player2NameWithDefault)
-}
-
-private func playerName(_ name: String?, withDefaultName defaultName: String) -> String {
-    if let name = name {
-        return name.isEmpty ? defaultName : name
-    } else {
-        return defaultName
-    }
 }
 ```
 
@@ -374,4 +363,3 @@ Let’s write a test that verifies when we invoke `routeToLoggedIn`, the `RootRo
 If you didn't make any mistakes, you should have a project that builds and works. There's also the possibility that we messed up this tutorial, in which case, please open an issue for us.
 
 You completed the second tutorial. Now onwards to [tutorial 3](iOS-Tutorial-3).
-
