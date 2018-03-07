@@ -49,7 +49,7 @@ In Android Studio, open Plugins > Install Plugins From Disk. Then install the
 Let’s generate the LoggedOut RIB. First, let's create a new package for each 
 RIB. Since this tutorial is being built as a single module, let's nest the “logged_out”
 package under “root”. This is a nice organizational structure since the LoggedOutRib will nest 
-under the RootRib.
+under the RootRib, given we are writing our code in a single module. In a multi-module project you wouldn't do this.
 
 <img src="https://github.com/uber/RIBs/blob/master/android/tutorials/tutorial1/tutorial_assets/logged_out.png?raw=true" width="600">
 
