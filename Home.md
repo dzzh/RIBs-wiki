@@ -10,14 +10,14 @@ RIBs is Uber’s cross-platform architecture framework. This framework is design
 When designing this framework for Uber, we were adhering to the following principles:
 * **Encourage Cross-Platform Collaboration:** Most of the complex parts of our apps are similar on both iOS and Android. RIBs present similar development patterns for Android and iOS. By using RIBs, engineers across both iOS and Android platforms can share a single, co-designed architecture for their features.
 * **Minimize Global States and Decisions:** Global state changes cause unpredictable behavior and can make it impossible for engineers to know the full impact of their changes. RIBs encourage encapsulating states within a deep hierarchy of well-isolated individual RIBs, thus avoiding global state issues.
-* **Testability and Isolation:** Classes must be easy to unit test and reason about in isolation. Individual RIB classes have distinct responsibilities (i.e. routing, business logic, view logic, creation of other RIB classes). In addition to that, most parts of the parent RIB logic is decoupled from its child RIB logic. This makes RIB classes easy to test and reason about independently.
+* **Testability and Isolation:** Classes must be easy to unit test and reason about in isolation. Individual RIB classes have distinct responsibilities (i.e. routing, business logic, view logic, creation of other RIB classes). In addition to that, parent RIB logic is mostly decoupled from its child RIB logic. This makes RIB classes easy to test and reason about independently.
 * **Tooling for Developer Productivity:** Adopting non-trivial architectural patterns does not scale beyond small applications without robust tooling. RIBs come with IDE tooling around code generation, static analysis and runtime integrations — all of which improve developer productivity for large and small teams.
-* **Open-Closed Principle:** Whenever possible, it should be able to add new features without modifying existing code. This can be seen in a few places when using RIBs. For example, you can attach or build a complex child RIB that requires dependencies from its parent with almost no changes to the parent RIB.
+* **Open-Closed Principle:** Whenever possible, the developers should be able to add new features without modifying the existing code. This can be seen in a few places when using RIBs. For example, you can attach or build a complex child RIB that requires dependencies from its parent with almost no changes to the parent RIB.
 * **Structured around Business Logic:** The app’s business logic structure should not need to strictly mirror the structure of the UI. For example, to facilitate animations and view performance, the view hierarchy may want to be shallower than the RIB hierarchy. Or, a single feature RIB may control the appearance of three views that appear at different places in the UI.
-* **Explicit Contracts:** Requirements should be declared with compile-time safe contracts. A class should not compile if its class dependencies and ordering dependencies are not satisfied. We use ReactiveX to represent ordering dependencies, type safe dependency injection (DI) systems to represent class dependencies and many DI scopes to encourage the creation of data invariants.
+* **Explicit Contracts:** Requirements should be declared with compile-time safe contracts. A class should not compile if its class dependencies and ordering dependencies are not satisfied. We use [ReactiveX](https://reactivex.io) to represent ordering dependencies, type safe dependency injection (DI) systems to represent class dependencies and many DI scopes to encourage the creation of data invariants.
 
 ## Parts of a RIB
-If you have previously worked with the [VIPER](https://mutualmobile.com/posts/meet-viper-fast-agile-non-lethal-ios-architecture-framework) architecture, then the class breakdown of a RIBs will look familiar to you. RIBs are usually composed of the following elements, with every element implemented in its own class:
+If you have previously worked with the [VIPER](https://mutualmobile.com/posts/meet-viper-fast-agile-non-lethal-ios-architecture-framework) architecture, then the class breakdown of a RIB will look familiar to you. RIBs are usually composed of the following elements, with every element implemented in its own class:
 
 <p align="center">
 <img src="https://github.com/uber/ribs/blob/assets/documentation/ribs.png" width="800" alt="RIBs"/>
@@ -52,6 +52,10 @@ Presenters are stateless classes that translate business models into view models
 Views build and update the UI. This includes instantiating and laying out UI components, handling user interaction, filling UI components with data, and animations. Views are designed to be as “dumb” as possible. They just display information. In general, they do not contain any code that needs to be unit tested.
 
 
+### Component
+Components are used to manage the RIB dependencies. They assist the Builders with instantiating the other units that compose a RIB. The Components provide access to the external dependencies that are needed to build a RIB as well as own the dependencies created by the RIB itself and control access to them from the other RIBs. The Component of a parent RIB is usually injected into the child RIB's Builder to give the child access to the parent RIB's dependencies.
+
+
 ## State Management
 Application state is largely managed and represented by the RIBs that are currently attached to the RIB tree. For example, as the user progresses through different states in a simplified ride sharing app, the app attaches and detaches the following RIBs (see GIF below).
 
@@ -84,7 +88,7 @@ Example of upwards communication with a listener interface. Lines denote RIB hie
 
 
 ## RIB Tooling
-In order to ensure smooth adoption of the RIB architecture across our four apps (per platform), we have invested in tooling to make RIBs easier to use and take advantage of the invariants created by adopting the RIBs architecture. Some of this tooling has been open sourced and will be discussed in tutorials. 
+In order to ensure smooth adoption of the RIB architecture across all our apps, we have invested in tooling to make RIBs easier to use and take advantage of the invariants created by adopting the RIBs architecture. Some of this tooling has been open sourced and will be discussed in tutorials. 
 
 The RIB related tooling that we have so far open sourced includes:
 * **Code generation:** IDE plugins for creating new RIBs and accompanying tests.
